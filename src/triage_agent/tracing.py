@@ -98,14 +98,16 @@ class LocalTraceCallbackHandler(BaseCallbackHandler):
         parent_run_id: UUID | None = None,
         tags: list[str] | None = None,
         metadata: dict[str, Any] | None = None,
+        name: str | None = None,
         **kwargs: Any,  # noqa: ANN401 — BaseCallbackHandler interface requires Any
     ) -> None:
         """Record chain/node start; identify the root run on first call."""
         try:
             now = time.monotonic()
             now_iso = datetime.now(UTC).isoformat()
+            # LangGraph passes the node name via the `name` kwarg; `serialized` is None.
             ser = serialized or {}
-            name = ser.get("name") or (ser.get("id") or ["unknown"])[-1]
+            resolved_name = name or ser.get("name") or (ser.get("id") or ["unknown"])[-1]
             with self._lock:
                 self._run_start_times[str(run_id)] = now
                 if parent_run_id is None and self._root_run_id is None:
@@ -114,7 +116,7 @@ class LocalTraceCallbackHandler(BaseCallbackHandler):
                     self._workflow_start_iso = now_iso
                 self._events.append({
                     "event_type": "chain_start",
-                    "name": name,
+                    "name": resolved_name,
                     "run_id": str(run_id),
                     "parent_run_id": str(parent_run_id) if parent_run_id else None,
                     "timestamp_iso": now_iso,
@@ -203,6 +205,7 @@ class LocalTraceCallbackHandler(BaseCallbackHandler):
         parent_run_id: UUID | None = None,
         tags: list[str] | None = None,
         metadata: dict[str, Any] | None = None,
+        name: str | None = None,
         **kwargs: Any,  # noqa: ANN401 — BaseCallbackHandler interface requires Any
     ) -> None:
         """Record LLM call start with prompt excerpt."""
@@ -210,13 +213,13 @@ class LocalTraceCallbackHandler(BaseCallbackHandler):
             now = time.monotonic()
             now_iso = datetime.now(UTC).isoformat()
             ser = serialized or {}
-            name = ser.get("name") or (ser.get("id") or ["ChatOpenAI"])[-1]
+            resolved_name = name or ser.get("name") or (ser.get("id") or ["ChatOpenAI"])[-1]
             prompt_excerpt = prompts[0][:_MAX_PROMPT_CHARS] if prompts else ""
             with self._lock:
                 self._run_start_times[str(run_id)] = now
                 self._events.append({
                     "event_type": "llm_start",
-                    "name": name,
+                    "name": resolved_name,
                     "run_id": str(run_id),
                     "parent_run_id": str(parent_run_id) if parent_run_id else None,
                     "timestamp_iso": now_iso,

@@ -61,7 +61,7 @@ fi
 log "Starting TriageAgent with Groq inference (log: $TRIAGE_LOG)..."
 mkdir -p "$ARTIFACTS_DIR"
 export LLM_PROVIDER=groq
-export LLM_MODEL="${LLM_MODEL:-openai/gpt-oss-20b}"
+export LLM_MODEL="openai/gpt-oss-20b"
 export GROQ_API_KEY="$GROQ_KEY"
 export GROQ_REASONING_EFFORT="${GROQ_REASONING_EFFORT:-medium}"
 export GROQ_MAX_TOKENS="${GROQ_MAX_TOKENS:-2048}"

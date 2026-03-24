@@ -84,10 +84,15 @@ class TriageAgentConfig(BaseSettings):
     # "local": ChatOpenAI with base_url for in-cluster vLLM/Ollama
     llm_provider: Literal["openai", "anthropic", "local"] = "local"
     # Env var: LLM_BASE_URL — OpenAI-compatible base URL for the local provider.
-    # Defaults to the in-cluster Qwen3-4b KServe ClusterIP service (port 80).
-    llm_base_url: str = "http://qwen3-4b.ml-serving.svc.cluster.local/v1"
+    # Defaults to the devcontainer llama.cpp server; override via LLM_BASE_URL for k8s.
+    llm_base_url: str = "http://localhost:18080/v1"
     # Sampling temperature.  Near-zero maximises determinism for structured JSON output.
     llm_temperature: float = 0.1
+    # Max tokens the LLM may generate per call.  The RCA JSON output (layer,
+    # root_nf, failure_mode, 2-4 evidence items, confidence) is ~200-350 tokens.
+    # 400 provides a safe buffer while avoiding the inference overhead of a 4096
+    # token generation budget on local quantized models.
+    llm_max_tokens: int = 400
 
     # -------------------------------------------------------------------------
     # agent_config — Pipeline Flow / Retry Logic

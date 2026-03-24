@@ -35,26 +35,14 @@ class EvidenceItem(BaseModel):
     significance: str
 
 
-class Hypothesis(BaseModel):
-    """Alternative hypothesis for root cause."""
-
-    layer: Literal["infrastructure", "application"]
-    nf: str
-    failure_mode: str
-    confidence: float = Field(ge=0.0, le=1.0)
-
-
 class RCAOutput(BaseModel):
     """Structured output from RCA LLM analysis."""
 
     layer: Literal["infrastructure", "application"]
     root_nf: str
     failure_mode: str
-    failed_phase: str | None
     confidence: float = Field(ge=0.0, le=1.0)
     evidence_chain: list[EvidenceItem]
-    alternative_hypotheses: list[Hypothesis]
-    reasoning: str
 
 
 # --- LLM Prompt Template ---
@@ -99,40 +87,42 @@ ANALYSIS FRAMEWORK:
    - Application root cause: NF logic errors, protocol failures, data validation errors
    - Infrastructure-triggered application: Infra issue causes cascading app failures
 
-EXAMPLES:
-- High infra_score (0.90) + OOMKill event + no app errors before crash
-  -> Infrastructure layer, root_nf = pod
-- Medium infra_score (0.55) + memory pressure + auth timeout logs
-  -> Application layer, root_nf = AUSF (app error, not infra)
-- Low infra_score (0.15) + authentication failure logs
-  -> Application layer, root_nf = identified from logs
+CONFIDENCE FORMULA — compute confidence mechanically before writing the JSON:
+  start = 0.50
+  +0.20 if the same error pattern appears in 3 or more log entries from the root_nf
+  +0.20 if trace_deviations exist and confirm the same root_nf deviates from the DAG
+  +0.10 if evidence_quality_score >= 0.90
+  +0.05 if infra_score == 0 and root cause is clearly application-layer
+  -0.20 if evidence comes from only one source and fewer than 3 entries total
+  confidence = max(0.0, min(1.0, start + adjustments))
 
-Return ONLY a JSON object:
+Example calculations:
+- infra_score=0.0, 6× "AmfUe is nil" from AMF, trace deviations confirm AMF, quality=0.95
+  → 0.50 +0.20 +0.20 +0.10 +0.05 = 1.00  → confidence=1.00
+- infra_score=0.90, OOMKill only, no app errors
+  → 0.50 +0.20 +0.05 = 0.75  → confidence=0.75
+- infra_score=0.0, single auth-timeout log, no traces
+  → 0.50 -0.20 = 0.30  → confidence=0.30
+
+Return ONLY a JSON object with no markdown or extra text.
+Include 2-4 evidence_chain items maximum (the most significant ones only).
+Keep each "significance" value to ≤ 20 words.
+List evidence_chain first, then apply the CONFIDENCE FORMULA to set confidence:
 {{
   "layer": "infrastructure|application",
   "root_nf": "<NF name or 'pod-level' for infrastructure>",
-  "failure_mode": "<from DAG failure_patterns or infrastructure event>",
-  "failed_phase": "<phase_id where failure occurred, or null for infra>",
-  "confidence": <0.0-1.0>,
+  "failure_mode": "<concise description, ≤ 15 words>",
   "evidence_chain": [
     {{
-      "timestamp": "...",
+      "timestamp": "<ISO timestamp>",
       "source": "infrastructure|metrics|logs|traces",
-      "nf": "...",
+      "nf": "<NF name>",
       "type": "log|metric|event|trace_deviation",
-      "content": "...",
-      "significance": "..."
+      "content": "<brief excerpt, ≤ 20 words>",
+      "significance": "<≤ 20 words: why this implicates root_nf>"
     }}
   ],
-  "alternative_hypotheses": [
-    {{
-      "layer": "...",
-      "nf": "...",
-      "failure_mode": "...",
-      "confidence": <0.0-1.0>
-    }}
-  ],
-  "reasoning": "<explanation combining infra findings + app evidence + trace deviations + temporal causality>"
+  "confidence": <apply CONFIDENCE FORMULA after listing evidence_chain above>
 }}
 """
 
@@ -140,19 +130,19 @@ Return ONLY a JSON object:
 def format_metrics_for_prompt(metrics: dict[str, Any] | None) -> str:
     if not metrics:
         return "No metrics available."
-    return json.dumps(metrics, indent=2)
+    return json.dumps(metrics, separators=(",", ":"))
 
 
 def format_logs_for_prompt(logs: dict[str, Any] | None) -> str:
     if not logs:
         return "No logs available."
-    return json.dumps(logs, indent=2)
+    return json.dumps(logs, separators=(",", ":"))
 
 
 def format_trace_deviations_for_prompt(deviations: dict[str, list[dict[str, Any]]] | None) -> str:
     if not deviations:
         return "No UE trace deviations available."
-    return json.dumps(deviations, indent=2)
+    return json.dumps(deviations, separators=(",", ":"))
 
 
 # ---------------------------------------------------------------------------
@@ -182,8 +172,8 @@ def compress_evidence(state: "TriageState") -> dict[str, str]:
         state.get("trace_deviations"), cfg.rca_token_budget_traces
     )
     return {
-        "infra_findings_json": json.dumps(state.get("infra_findings") or {}, indent=2),
-        "dag_json": json.dumps(compressed_dags, indent=2),
+        "infra_findings_json": json.dumps(state.get("infra_findings") or {}, separators=(",", ":")),
+        "dag_json": json.dumps(compressed_dags, separators=(",", ":")),
         "metrics_formatted": format_metrics_for_prompt(state.get("metrics")),
         "logs_formatted": format_logs_for_prompt(state.get("logs")),
         "trace_deviations_formatted": format_trace_deviations_for_prompt(compressed_traces),
@@ -232,7 +222,7 @@ def create_llm(
             api_key=SecretStr(api_key) if api_key else None,
             temperature=temperature,
             timeout=timeout,
-            model_kwargs={"max_tokens": 4096},
+            model_kwargs={"max_tokens": get_config().llm_max_tokens},
             streaming=True,
         )
     elif provider == "anthropic":
@@ -248,7 +238,7 @@ def create_llm(
             api_key=SecretStr(api_key) if api_key else None,
             temperature=temperature,
             timeout=timeout,
-            max_tokens=4096,
+            max_tokens=get_config().llm_max_tokens,
             streaming=True,
         )
     elif provider == "local":
@@ -264,7 +254,7 @@ def create_llm(
             base_url=base_url,
             temperature=temperature,
             timeout=timeout,
-            model_kwargs={"max_tokens": 512},
+            model_kwargs={"max_tokens": get_config().llm_max_tokens, "response_format": {"type": "json_object"}},
             streaming=True,
         )
     else:

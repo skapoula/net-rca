@@ -329,10 +329,10 @@ class TestLLMProviderConfig:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True), pytest.raises(ValueError):
             TriageAgentConfig(llm_api_key="key", llm_provider="grok")  # type: ignore[arg-type]
 
-    def test_llm_base_url_defaults_to_cluster_endpoint(self) -> None:
+    def test_llm_base_url_defaults_to_local_endpoint(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
             config = TriageAgentConfig(llm_api_key="test-key")
-        assert config.llm_base_url == "http://qwen3-4b.ml-serving.svc.cluster.local/v1"
+        assert config.llm_base_url == "http://localhost:8000"
 
     def test_llm_base_url_from_env(self) -> None:
         with patch.dict(

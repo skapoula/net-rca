@@ -332,7 +332,7 @@ class TestLLMProviderConfig:
     def test_llm_base_url_defaults_to_local_endpoint(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
             config = TriageAgentConfig(llm_api_key="test-key")
-        assert config.llm_base_url == "http://localhost:8000"
+        assert config.llm_base_url == "http://localhost:18080/v1"
 
     def test_llm_base_url_from_env(self) -> None:
         with patch.dict(

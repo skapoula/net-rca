@@ -85,7 +85,7 @@ class TriageAgentConfig(BaseSettings):
     llm_provider: Literal["openai", "anthropic", "local"] = "local"
     # Env var: LLM_BASE_URL — OpenAI-compatible base URL for the local provider.
     # Defaults to the devcontainer llama.cpp server; override via LLM_BASE_URL for k8s.
-    llm_base_url: str = "http://localhost:8000"
+    llm_base_url: str = "http://localhost:18080/v1"
     # Sampling temperature.  Near-zero maximises determinism for structured JSON output.
     llm_temperature: float = 0.1
     # Max tokens the LLM may generate per call.  The RCA JSON output (layer,

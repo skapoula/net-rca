@@ -670,53 +670,49 @@ class TestUeTracesAgentDeltaReturn:
 
 
 class TestUeTracesAgentStateLogs:
-    """Tests for INC-6: use state.logs for IMSI discovery before Loki query."""
+    """Tests for IMSI discovery: always uses Loki query regardless of state.logs."""
 
     @patch("triage_agent.agents.ue_traces_agent.get_memgraph")
     @patch("triage_agent.agents.ue_traces_agent.loki_query")
-    def test_uses_state_logs_when_available(
+    def test_always_calls_loki_for_discovery(
         self,
         mock_loki: MagicMock,
         mock_get_memgraph: MagicMock,
         sample_initial_state: TriageState,
     ) -> None:
-        """When state.logs contains IMSI-bearing entries, loki_query is NOT called for discovery."""
+        """loki_query is always called for IMSI discovery, even when state.logs is populated.
+
+        ue_traces_agent runs in the same parallel superstep as logs_agent, so
+        state.logs is not populated yet. Discovery always uses Loki.
+        """
         mock_conn = MagicMock()
         mock_conn.execute_cypher.return_value = []
         mock_get_memgraph.return_value = mock_conn
-        # Per-IMSI trace loki_query (not discovery) returns empty
         mock_loki.return_value = []
 
         state = sample_initial_state
         state["dags"] = [{"name": "registration_general", "all_nfs": ["AMF"]}]
         state["logs"] = {
-            "AMF": [
-                {"message": "Registration from imsi-001010123456789 started"},
-                {"message": "Normal event"},
-            ]
+            "AMF": [{"message": "Registration from imsi-001010123456789 started"}]
         }
 
-        result = ue_traces_agent(state)
+        ue_traces_agent(state)
 
-        # Discovery IMSI found from state.logs — loki_query not called at all:
-        # discovery is skipped (state.logs present) and per-IMSI traces use
-        # the async _build_traces_async path directly, bypassing loki_query.
-        assert result["discovered_imsis"] == ["001010123456789"]
-        assert mock_loki.call_count == 0
+        # Discovery always calls loki_query regardless of state.logs content.
+        assert mock_loki.call_count >= 1
 
     @patch("triage_agent.agents.ue_traces_agent.get_memgraph")
     @patch("triage_agent.agents.ue_traces_agent.loki_query")
-    def test_falls_back_to_loki_when_state_logs_empty(
+    def test_calls_loki_when_state_logs_empty(
         self,
         mock_loki: MagicMock,
         mock_get_memgraph: MagicMock,
         sample_initial_state: TriageState,
     ) -> None:
-        """When state.logs is empty, loki_query IS called for IMSI discovery."""
+        """loki_query is called for IMSI discovery when state.logs is empty."""
         mock_conn = MagicMock()
         mock_conn.execute_cypher.return_value = []
         mock_get_memgraph.return_value = mock_conn
-        # Discovery query returns no IMSIs
         mock_loki.return_value = []
 
         state = sample_initial_state
@@ -725,5 +721,4 @@ class TestUeTracesAgentStateLogs:
 
         ue_traces_agent(state)
 
-        # loki_query should be called for discovery (state.logs is empty)
         assert mock_loki.call_count >= 1

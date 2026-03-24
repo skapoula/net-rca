@@ -444,9 +444,30 @@ def rca_agent_first_attempt(state: TriageState) -> dict[str, Any]:
             "evidence_gaps": [f"LLM output error: {type(e).__name__}"],
         }
 
-    root_nf = analysis["root_nf"]
-    failure_mode = analysis["failure_mode"]
-    confidence = analysis["confidence"]
+    try:
+        root_nf = analysis["root_nf"]
+        failure_mode = analysis["failure_mode"]
+        confidence = analysis["confidence"]
+    except KeyError as e:
+        attempt = state.get("attempt_count", 1)
+        cfg_ke = get_config()
+        will_retry = attempt < cfg_ke.max_attempts
+        logger.warning(
+            "LLM response missing required key for incident %s (attempt %d, retry=%s): %s",
+            state.get("incident_id"),
+            attempt,
+            will_retry,
+            e,
+        )
+        return {
+            "root_nf": "unknown",
+            "failure_mode": "llm_error",
+            "confidence": 0.0,
+            "evidence_chain": [],
+            "layer": "unknown",
+            "needs_more_evidence": will_retry,
+            "evidence_gaps": [f"LLM output missing required key: {e}"],
+        }
     evidence_chain = analysis.get("evidence_chain", [])
     layer = analysis.get("layer", "application")
 

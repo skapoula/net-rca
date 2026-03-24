@@ -87,7 +87,7 @@ def build_nf_queries(nfs: list[str]) -> list[str]:
         nf_lower = nf.lower()
         queries.extend([
             f'rate(http_requests_total{{nf="{nf_lower}",status=~"5.."}}[{ew}])',
-            f'histogram_quantile({q}, http_request_duration_seconds{{nf="{nf_lower}"}})',
+            f'histogram_quantile({q}, sum by (le) (rate(http_request_duration_seconds_bucket{{nf="{nf_lower}"}}[{ew}])))',
             f'rate(container_cpu_usage_seconds_total{{pod=~".*{nf_lower}.*"}}[{cw}])',
             f'container_memory_working_set_bytes{{pod=~".*{nf_lower}.*"}}',
         ])

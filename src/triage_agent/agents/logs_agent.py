@@ -20,14 +20,10 @@ from langsmith import traceable
 from triage_agent.config import get_config
 from triage_agent.mcp.client import MCPClient
 from triage_agent.state import TriageState
-from triage_agent.utils import count_tokens, parse_loki_response, parse_timestamp, save_artifact
+from triage_agent.utils import count_tokens, extract_nf_from_pod_name, parse_loki_response, parse_timestamp, save_artifact
 
 logger = logging.getLogger(__name__)
 
-
-def extract_nf_from_pod_name(pod: str) -> str:
-    """Extract NF name prefix from a k8s pod name. Returns lowercase."""
-    return pod.split("-")[0].lower()
 
 
 def wildcard_match(text: str, pattern: str) -> bool:

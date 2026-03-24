@@ -87,3 +87,7 @@ memgraph_data/
 
 # LangSmith
 .langsmith/
+
+# Runtime test artifacts and results (generated per run)
+artifacts/
+test-results/

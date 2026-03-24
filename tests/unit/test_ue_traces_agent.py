@@ -698,10 +698,11 @@ class TestUeTracesAgentStateLogs:
 
         result = ue_traces_agent(state)
 
-        # Discovery IMSI found from state.logs — loki_query called only for per-IMSI trace, not discovery
+        # Discovery IMSI found from state.logs — loki_query not called at all:
+        # discovery is skipped (state.logs present) and per-IMSI traces use
+        # the async _build_traces_async path directly, bypassing loki_query.
         assert result["discovered_imsis"] == ["001010123456789"]
-        # loki_query should be called only once (per-IMSI trace), not twice (discovery + trace)
-        assert mock_loki.call_count == 1
+        assert mock_loki.call_count == 0
 
     @patch("triage_agent.agents.ue_traces_agent.get_memgraph")
     @patch("triage_agent.agents.ue_traces_agent.loki_query")

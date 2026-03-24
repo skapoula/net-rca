@@ -151,22 +151,30 @@ async def _fetch_loki_logs_direct(
     return []
 
 
-def loki_query(logql: str, start: int, end: int) -> list[dict[str, Any]]:
+def loki_query(
+    logql: str,
+    start: int,
+    end: int,
+    use_mcp: bool | None = None,
+) -> list[dict[str, Any]]:
     """Execute a Loki query with two-path architecture.
 
-    1. Probe MCP server availability (lightweight /ready check).
+    1. Probe MCP server availability (lightweight /ready check) — skipped when
+       ``use_mcp`` is provided by the caller (allows batching a single health
+       check across many queries).
     2. If reachable → MCP path.
     3. If unreachable → direct Loki HTTP path.
     """
-    # Step 1: Health check
-    try:
-        use_mcp = asyncio.run(_check_mcp_available())
-    except Exception:
-        logger.warning(
-            "MCP health check failed, defaulting to direct Loki",
-            exc_info=True,
-        )
-        use_mcp = False
+    # Step 1: Health check (only when not provided by caller)
+    if use_mcp is None:
+        try:
+            use_mcp = asyncio.run(_check_mcp_available())
+        except Exception:
+            logger.warning(
+                "MCP health check failed, defaulting to direct Loki",
+                exc_info=True,
+            )
+            use_mcp = False
 
     # Step 2: Execute query on chosen path
     if use_mcp:
@@ -193,6 +201,44 @@ def loki_query(logql: str, start: int, end: int) -> list[dict[str, Any]]:
                 exc_info=True,
             )
             return []
+
+
+async def _fetch_imsi_trace_async(
+    imsi: str,
+    start: int,
+    end: int,
+    use_mcp: bool,
+) -> dict[str, Any]:
+    """Fetch and contract a single IMSI trace asynchronously."""
+    logql = per_imsi_logql(imsi)
+    if use_mcp:
+        try:
+            raw = await _fetch_loki_logs_mcp(logql, start=start, end=end)
+        except Exception:
+            logger.warning(
+                "MCP query failed for IMSI %s, returning empty trace",
+                imsi,
+                exc_info=True,
+            )
+            raw = []
+    else:
+        raw = await _fetch_loki_logs_direct(logql, start=start, end=end)
+    return contract_imsi_trace(raw, imsi)
+
+
+async def _build_traces_async(
+    imsis: list[str],
+    start: int,
+    end: int,
+) -> list[dict[str, Any]]:
+    """Fetch all per-IMSI traces concurrently with a single MCP health check."""
+    use_mcp = await _check_mcp_available()
+    if not use_mcp:
+        logger.info("MCP server unavailable, using direct Loki for IMSI traces")
+    tasks = [
+        _fetch_imsi_trace_async(imsi, start, end, use_mcp) for imsi in imsis
+    ]
+    return list(await asyncio.gather(*tasks))
 
 
 # ---------------------------------------------------------------------------
@@ -282,15 +328,14 @@ def ue_traces_agent(state: TriageState) -> dict[str, Any]:
         imsis = extract_unique_imsis(discovery_logs)
 
     # 2. Per-IMSI trace construction (wider window: lookback + lookahead)
-    traces: list[dict[str, Any]] = []
-    for imsi in imsis:
-        logql = per_imsi_logql(imsi)
-        raw_trace = loki_query(
-            logql,
+    # All IMSIs are fetched concurrently; MCP availability is checked once.
+    traces = asyncio.run(
+        _build_traces_async(
+            imsis,
             start=alert_time - cfg.imsi_trace_lookback_seconds,
             end=alert_time + cfg.alert_lookahead_seconds,
         )
-        traces.append(contract_imsi_trace(raw_trace, imsi))
+    )
 
     # 3. Ingest into Memgraph
     ingest_traces_to_memgraph(traces, state["incident_id"])

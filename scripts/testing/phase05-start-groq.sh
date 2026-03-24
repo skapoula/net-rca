@@ -65,6 +65,7 @@ export LLM_MODEL="${LLM_MODEL:-openai/gpt-oss-20b}"
 export GROQ_API_KEY="$GROQ_KEY"
 export GROQ_REASONING_EFFORT="${GROQ_REASONING_EFFORT:-medium}"
 export GROQ_MAX_TOKENS="${GROQ_MAX_TOKENS:-2048}"
+export LANGCHAIN_TRACING_V2=true
 log "LLM_PROVIDER=$LLM_PROVIDER  LLM_MODEL=$LLM_MODEL  GROQ_REASONING_EFFORT=$GROQ_REASONING_EFFORT"
 
 nohup uvicorn triage_agent.api.webhook:app --port 8000 \

@@ -14,6 +14,7 @@ from pydantic import BaseModel
 
 from triage_agent.config import get_config
 from triage_agent.graph import create_workflow, get_initial_state
+from triage_agent.tracing import LocalTraceCallbackHandler
 
 logger = logging.getLogger(__name__)
 
@@ -64,9 +65,17 @@ async def _run_triage(alert_dict: dict[str, Any], incident_id: str) -> None:
     Uses asyncio.to_thread to avoid nested event loop conflicts since the
     agent functions call asyncio.run() internally.
     """
+    handler = LocalTraceCallbackHandler(
+        incident_id=incident_id,
+        artifacts_dir=_cfg.artifacts_dir,
+    )
     try:
         initial_state = get_initial_state(alert=alert_dict, incident_id=incident_id)
-        result = await asyncio.to_thread(_workflow.invoke, initial_state)
+        result = await asyncio.to_thread(
+            _workflow.invoke,
+            initial_state,
+            {"callbacks": [handler]},
+        )
         _incident_store[incident_id] = {"ts": time.monotonic(), "data": result.get("final_report") or {}}
         logger.info(
             f"Triage complete: incident_id={incident_id}, "
@@ -74,6 +83,7 @@ async def _run_triage(alert_dict: dict[str, Any], incident_id: str) -> None:
         )
     except Exception:
         logger.exception(f"Triage failed: incident_id={incident_id}")
+        handler.flush()  # write partial trace even on workflow failure
         _incident_store[incident_id] = {"ts": time.monotonic(), "data": {"error": "triage_failed"}}
 
 

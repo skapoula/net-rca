@@ -150,6 +150,65 @@ pull_artifacts() {
   fi
 }
 
+# ── Trace collector ───────────────────────────────────────────────────────────
+# Usage: collect_traces <phase_label> <incident_id> [<incident_id> ...]
+# Aggregates trace.json and trace-summary.txt from all given incidents into
+# $RESULTS_DIR/traces-phase<N>.json and $RESULTS_DIR/traces-phase<N>-summary.txt
+collect_traces() {
+  local phase_label="$1"
+  shift
+  local incident_ids=("$@")
+  local found=0
+  local missing=0
+  local out_json="$RESULTS_DIR/traces-phase${phase_label}.json"
+  local out_summary="$RESULTS_DIR/traces-phase${phase_label}-summary.txt"
+  local first_entry=true
+
+  printf '[' > "$out_json"
+  : > "$out_summary"
+
+  for incident_id in "${incident_ids[@]}"; do
+    local trace_file="$ARTIFACTS_DIR/${incident_id}/trace.json"
+    local summary_file="$ARTIFACTS_DIR/${incident_id}/trace-summary.txt"
+
+    if [[ ! -f "$trace_file" ]]; then
+      log "collect_traces: trace.json not found for $incident_id — skipping"
+      missing=$((missing + 1))
+      continue
+    fi
+    if ! jq . "$trace_file" > /dev/null 2>&1; then
+      log "collect_traces: trace.json invalid for $incident_id — skipping"
+      missing=$((missing + 1))
+      continue
+    fi
+
+    [[ "$first_entry" == "true" ]] && first_entry=false || printf ',' >> "$out_json"
+    jq . "$trace_file" >> "$out_json"
+
+    printf '=== Incident: %s ===\n' "$incident_id" >> "$out_summary"
+    if [[ -f "$summary_file" ]]; then
+      cat "$summary_file" >> "$out_summary"
+    else
+      printf '(trace-summary.txt not found)\n' >> "$out_summary"
+    fi
+    printf '\n' >> "$out_summary"
+
+    found=$((found + 1))
+  done
+
+  printf ']' >> "$out_json"
+
+  if [[ "$found" -gt 0 && "$missing" -eq 0 ]]; then
+    pass "collect_traces phase${phase_label}: traces for all ${found} incident(s) → $(basename "$out_json")"
+  elif [[ "$found" -gt 0 ]]; then
+    pass "collect_traces phase${phase_label}: ${found} trace(s) collected, ${missing} missing (partial)"
+  else
+    fail "collect_traces phase${phase_label}: no trace files found"
+  fi
+  log "Traces: $out_json"
+  log "Summary: $out_summary"
+}
+
 # ── Memgraph query helper ─────────────────────────────────────────────────────
 # Usage: mgquery <cypher_query>
 # Returns: mgconsole output

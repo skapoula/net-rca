@@ -146,6 +146,7 @@ FINAL_STATUS=$(echo "$FINAL" | jq -r '.status')
   { fail "3.9: Final status=$FINAL_STATUS"; ERRORS=$((ERRORS+1)); }
 
 pull_artifacts "$NEW_INCIDENT"
+collect_traces "3" "$INCIDENT" "$NEW_INCIDENT"
 
 echo ""
 if [[ "$ERRORS" -eq 0 ]]; then

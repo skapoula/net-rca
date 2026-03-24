@@ -202,6 +202,8 @@ log "  APN after restore: $APN_RESTORED"
 kubectl rollout restart deployment ueransim -n "$CORE_NS"
 kubectl rollout status deployment ueransim -n "$CORE_NS"
 
+collect_traces "4" "$INCIDENT_41" "$INCIDENT_42" "$INCIDENT_43" "$INCIDENT_44"
+
 # ── Overall summary ───────────────────────────────────────────────────────────
 log ""
 log "=== Phase 4 Summary ==="

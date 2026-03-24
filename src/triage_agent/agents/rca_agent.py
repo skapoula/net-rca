@@ -198,15 +198,20 @@ def create_llm(
     api_key: str,
     timeout: int,
     base_url: str = "",
+    groq_api_key: str = "",
+    reasoning_effort: str = "",
 ) -> Any:
     """Factory: construct the appropriate LangChain chat model.
 
     Args:
-        provider: One of "openai", "anthropic", "local"
+        provider: One of "openai", "anthropic", "local", "groq"
         model: Model name string (provider-specific)
         api_key: API key; empty string allowed for local provider
         timeout: Request timeout in seconds
         base_url: Only used for "local" provider
+        groq_api_key: API key for Groq; only used when provider == "groq"
+        reasoning_effort: Groq reasoning effort ("none"/"low"/"medium"/"high");
+            only used when provider == "groq" and non-empty
 
     Returns:
         A LangChain chat model with .invoke() method
@@ -214,6 +219,7 @@ def create_llm(
     Raises:
         ImportError: If provider == "anthropic" and langchain-anthropic is not installed
         ValueError: If provider == "local" and base_url is empty, or unknown provider
+        ValueError: If provider == "groq" and groq_api_key is empty
     """
     temperature = get_config().llm_temperature
     if provider == "openai":
@@ -257,6 +263,24 @@ def create_llm(
             model_kwargs={"max_tokens": get_config().llm_max_tokens, "response_format": {"type": "json_object"}},
             streaming=True,
         )
+    elif provider == "groq":
+        if not groq_api_key:
+            raise ValueError(
+                "groq_api_key must be set when llm_provider is 'groq'. "
+                "Set GROQ_API_KEY env var to your Groq API key."
+            )
+        _groq_kwargs: dict[str, Any] = {"max_tokens": get_config().groq_max_tokens}
+        if reasoning_effort:
+            _groq_kwargs["reasoning_effort"] = reasoning_effort
+        return ChatOpenAI(
+            model=model,
+            api_key=SecretStr(groq_api_key),
+            base_url="https://api.groq.com/openai/v1",
+            temperature=temperature,
+            timeout=timeout,
+            model_kwargs=_groq_kwargs,
+            streaming=True,
+        )
     else:
         raise ValueError(f"Unsupported llm_provider: '{provider}'")
 
@@ -278,13 +302,15 @@ def llm_analyze_evidence(prompt: str, timeout: int | None = None) -> dict[str, A
     config = get_config()
     timeout_val = timeout or config.llm_timeout
 
-    # Initialize LLM client via factory (supports openai / anthropic / local)
+    # Initialize LLM client via factory (supports openai / anthropic / local / groq)
     llm = create_llm(
         provider=config.llm_provider,
         model=config.llm_model,
         api_key=config.llm_api_key,
         timeout=timeout_val,
         base_url=config.llm_base_url,
+        groq_api_key=config.groq_api_key,
+        reasoning_effort=config.groq_reasoning_effort if config.llm_provider == "groq" else "",
     )
 
     messages = [

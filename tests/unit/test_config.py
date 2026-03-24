@@ -103,7 +103,7 @@ class TestDefaultValues:
     def test_memgraph_defaults(self) -> None:
         """Memgraph host/port should default to localhost:7687."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
 
         assert config.memgraph_host == "localhost"
         assert config.memgraph_port == 7687
@@ -111,7 +111,7 @@ class TestDefaultValues:
     def test_mcp_url_defaults(self) -> None:
         """Prometheus and Loki URLs should default to cluster-local addresses."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
 
         assert config.prometheus_url == "http://kube-prom-kube-prometheus-prometheus.monitoring:9090"
         assert config.loki_url == "http://loki.monitoring:3100"
@@ -119,29 +119,29 @@ class TestDefaultValues:
     def test_mcp_timeout_default(self) -> None:
         """MCP timeout should default to 3.0 seconds."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
 
         assert config.mcp_timeout == 3.0
 
     def test_llm_defaults(self) -> None:
         """LLM model and timeout should have sensible defaults."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
 
-        assert config.llm_model == "qwen3-4b-instruct-2507.Q4_K_M.gguf"
+        assert config.llm_model == "openai/gpt-oss-20b"
         assert config.llm_timeout == 300
 
     def test_langsmith_default_project(self) -> None:
         """LangSmith project should default to '5g-triage-agent'."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
 
         assert config.langsmith_project == "5g-triage-agent"
 
     def test_llm_api_key_stored(self) -> None:
         """Explicitly passed llm_api_key should be stored."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="sk-test-123")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="sk-test-123")
 
         assert config.llm_api_key == "sk-test-123"
 
@@ -154,7 +154,7 @@ class TestEnvironmentVariableOverride:
         with patch.dict(
             os.environ, {**_CLEAN_ENV, "MEMGRAPH_HOST": "mg.internal"}, clear=True
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
 
         assert config.memgraph_host == "mg.internal"
 
@@ -163,7 +163,7 @@ class TestEnvironmentVariableOverride:
         with patch.dict(
             os.environ, {**_CLEAN_ENV, "MEMGRAPH_PORT": "7700"}, clear=True
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
 
         assert config.memgraph_port == 7700
 
@@ -172,7 +172,7 @@ class TestEnvironmentVariableOverride:
         with patch.dict(
             os.environ, {**_CLEAN_ENV, "LLM_API_KEY": "env-api-key"}, clear=True
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
 
         assert config.llm_api_key == "env-api-key"
 
@@ -183,7 +183,7 @@ class TestEnvironmentVariableOverride:
             {**_CLEAN_ENV, "PROMETHEUS_URL": "http://custom-prom:9090"},
             clear=True,
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
 
         assert config.prometheus_url == "http://custom-prom:9090"
 
@@ -201,7 +201,7 @@ class TestEnvironmentVariableOverride:
             },
             clear=True,
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
 
         assert config.memgraph_host == "remote-mg"
         assert config.memgraph_port == 7700
@@ -217,18 +217,18 @@ class TestInvalidPortRaisesValueError:
         """Negative port should raise ValueError."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
             with pytest.raises(ValueError, match="must be positive"):
-                TriageAgentConfig(llm_api_key="test-key", memgraph_port=-1)
+                TriageAgentConfig(_env_file=None, llm_api_key="test-key", memgraph_port=-1)
 
     def test_zero_port(self) -> None:
         """Zero port should raise ValueError."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
             with pytest.raises(ValueError, match="must be positive"):
-                TriageAgentConfig(llm_api_key="test-key", memgraph_port=0)
+                TriageAgentConfig(_env_file=None, llm_api_key="test-key", memgraph_port=0)
 
     def test_valid_port_does_not_raise(self) -> None:
         """Positive port should not raise."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key", memgraph_port=1234)
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key", memgraph_port=1234)
 
         assert config.memgraph_port == 1234
 
@@ -280,7 +280,7 @@ class TestMemgraphUriProperty:
     def test_default_uri(self) -> None:
         """Default host/port should produce bolt://localhost:7687."""
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
 
         assert config.memgraph_uri == "bolt://localhost:7687"
 
@@ -302,7 +302,7 @@ class TestMemgraphUriProperty:
             {**_CLEAN_ENV, "MEMGRAPH_HOST": "mg-prod", "MEMGRAPH_PORT": "17687"},
             clear=True,
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
 
         assert config.memgraph_uri == "bolt://mg-prod:17687"
 
@@ -310,35 +310,35 @@ class TestMemgraphUriProperty:
 class TestLLMProviderConfig:
     """Tests for llm_provider and llm_base_url fields."""
 
-    def test_llm_provider_defaults_to_local(self) -> None:
+    def test_llm_provider_defaults_to_groq(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
-        assert config.llm_provider == "local"
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
+        assert config.llm_provider == "groq"
 
     def test_llm_provider_from_env_anthropic(self) -> None:
         with patch.dict(os.environ, {**_CLEAN_ENV, "LLM_PROVIDER": "anthropic"}, clear=True):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.llm_provider == "anthropic"
 
     def test_llm_provider_from_env_local(self) -> None:
         with patch.dict(os.environ, {**_CLEAN_ENV, "LLM_PROVIDER": "local"}, clear=True):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.llm_provider == "local"
 
     def test_llm_provider_invalid_raises(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True), pytest.raises(ValueError):
-            TriageAgentConfig(llm_api_key="key", llm_provider="grok")  # type: ignore[arg-type]
+            TriageAgentConfig(_env_file=None, llm_api_key="key", llm_provider="grok")  # type: ignore[arg-type]
 
     def test_llm_base_url_defaults_to_local_endpoint(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.llm_base_url == "http://localhost:18080/v1"
 
     def test_llm_base_url_from_env(self) -> None:
         with patch.dict(
             os.environ, {**_CLEAN_ENV, "LLM_BASE_URL": "http://vllm:8080/v1"}, clear=True
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.llm_base_url == "http://vllm:8080/v1"
 
 
@@ -386,12 +386,12 @@ class TestNewModelConfigFields:
 
     def test_llm_temperature_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.llm_temperature == 0.1
 
     def test_llm_temperature_from_env(self) -> None:
         with patch.dict(os.environ, {**_CLEAN_ENV, "LLM_TEMPERATURE": "0.3"}, clear=True):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.llm_temperature == 0.3
 
 
@@ -400,30 +400,30 @@ class TestNewAgentConfigFields:
 
     def test_max_attempts_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.max_attempts == 2
 
     def test_max_attempts_from_env(self) -> None:
         with patch.dict(os.environ, {**_CLEAN_ENV, "MAX_ATTEMPTS": "3"}, clear=True):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.max_attempts == 3
 
     def test_alert_window_defaults(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.alert_lookback_seconds == 300
         assert config.alert_lookahead_seconds == 60
 
     def test_imsi_windows_defaults(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.imsi_discovery_window_seconds == 30
         assert config.imsi_trace_lookback_seconds == 120
         assert config.imsi_digit_length == 15
 
     def test_confidence_gate_defaults(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.min_confidence_default == 0.70
         assert config.min_confidence_relaxed == 0.65
         assert config.high_evidence_threshold == 0.80
@@ -434,7 +434,7 @@ class TestNewScoringConfigFields:
 
     def test_infra_weight_defaults_sum_to_one(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         total = (
             config.infra_weight_restarts
             + config.infra_weight_oom
@@ -445,19 +445,19 @@ class TestNewScoringConfigFields:
 
     def test_restart_thresholds_ordered(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.restart_threshold_high < config.restart_threshold_critical
 
     def test_evidence_quality_scores_defaults(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.eq_score_all_sources == 0.95
         assert config.eq_score_metrics_logs == 0.80
         assert config.eq_score_no_evidence == 0.10
 
     def test_rca_thresholds_defaults(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.infra_root_cause_threshold == 0.80
         assert config.infra_triggered_threshold == 0.60
         assert config.app_only_threshold == 0.30
@@ -469,7 +469,7 @@ class TestNewScoringConfigFields:
              "INFRA_WEIGHT_POD_STATUS": "0.20", "INFRA_WEIGHT_RESOURCES": "0.20"},
             clear=True,
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.infra_weight_restarts == 0.50
         assert config.infra_weight_oom == 0.10
 
@@ -479,7 +479,7 @@ class TestNewQueryConfigFields:
 
     def test_promql_window_defaults(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.promql_restart_window == "1h"
         assert config.promql_oom_window == "5m"
         assert config.promql_cpu_rate_window_infra == "2m"
@@ -490,7 +490,7 @@ class TestNewQueryConfigFields:
 
     def test_loki_query_limit_from_env(self) -> None:
         with patch.dict(os.environ, {**_CLEAN_ENV, "LOKI_QUERY_LIMIT": "5000"}, clear=True):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.loki_query_limit == 5000
 
 
@@ -499,17 +499,17 @@ class TestNewInfraConfigFields:
 
     def test_memgraph_pool_size_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.memgraph_pool_size == 10
 
     def test_memgraph_max_retries_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.memgraph_max_retries == 3
 
     def test_known_nfs_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert "amf" in config.known_nfs
         assert "smf" in config.known_nfs
         assert len(config.known_nfs) == 9
@@ -520,7 +520,7 @@ class TestNewInfraConfigFields:
             {**_CLEAN_ENV, 'KNOWN_NFS': '["amf","smf","custom-nf"]'},
             clear=True,
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.known_nfs == ["amf", "smf", "custom-nf"]
 
 
@@ -529,12 +529,12 @@ class TestNewApiConfigFields:
 
     def test_prometheus_max_retries_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.prometheus_max_retries == 3
 
     def test_cors_allow_origins_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.cors_allow_origins == ["*"]
 
     def test_cors_allow_origins_from_env(self) -> None:
@@ -543,17 +543,17 @@ class TestNewApiConfigFields:
             {**_CLEAN_ENV, 'CORS_ALLOW_ORIGINS': '["http://alertmanager:9093"]'},
             clear=True,
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.cors_allow_origins == ["http://alertmanager:9093"]
 
     def test_server_host_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.server_host == "0.0.0.0"
 
     def test_server_port_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.server_port == 8000
 
 
@@ -562,12 +562,12 @@ class TestObservabilityConfig:
 
     def test_app_version_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.app_version == "3.2.0"
 
     def test_app_version_from_env(self) -> None:
         with patch.dict(os.environ, {**_CLEAN_ENV, "APP_VERSION": "4.0.0"}, clear=True):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.app_version == "4.0.0"
 
 
@@ -592,12 +592,12 @@ class TestLangSmithConfig:
         env = {**_CLEAN_ENV}
         env.pop("LANGCHAIN_TRACING_V2", None)
         with patch.dict(os.environ, env, clear=True):
-            TriageAgentConfig(langchain_tracing_v2="false")
+            TriageAgentConfig(_env_file=None, langchain_tracing_v2="false")
             assert os.environ.get("LANGCHAIN_TRACING_V2") != "true"
 
     def test_langchain_project_defaults_to_5g_triage_agent(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.langchain_project == "5g-triage-agent"
 
     def test_existing_env_var_not_overwritten(self) -> None:
@@ -617,25 +617,25 @@ class TestArtifactsConfig:
     def test_artifacts_dir_default(self) -> None:
         from pathlib import Path
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert Path(config.artifacts_dir).is_absolute()
         assert config.artifacts_dir.endswith("artifacts")
 
     def test_artifacts_dir_from_env(self) -> None:
         with patch.dict(os.environ, {**_CLEAN_ENV, "ARTIFACTS_DIR": "/tmp/data"}, clear=True):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.artifacts_dir == "/tmp/data"
 
     def test_nf_latency_threshold_default(self) -> None:
         with patch.dict(os.environ, _CLEAN_ENV, clear=True):
-            config = TriageAgentConfig(llm_api_key="test-key")
+            config = TriageAgentConfig(_env_file=None, llm_api_key="test-key")
         assert config.nf_latency_threshold_seconds == 1.0
 
     def test_nf_latency_threshold_from_env(self) -> None:
         with patch.dict(
             os.environ, {**_CLEAN_ENV, "NF_LATENCY_THRESHOLD_SECONDS": "2.5"}, clear=True
         ):
-            config = TriageAgentConfig()
+            config = TriageAgentConfig(_env_file=None)
         assert config.nf_latency_threshold_seconds == 2.5
 
 
@@ -666,7 +666,7 @@ class TestLogNoisePatterns:
         from triage_agent.config import TriageAgentConfig
 
         patterns = ["*custom noise*", "*test pattern*"]
-        cfg = TriageAgentConfig(log_noise_patterns=patterns)
+        cfg = TriageAgentConfig(_env_file=None, log_noise_patterns=patterns)
         assert cfg.log_noise_patterns == patterns
 
 
@@ -675,10 +675,10 @@ class TestArtifactsDirResolution:
         """A relative artifacts_dir must be converted to absolute at config load."""
         from triage_agent.config import TriageAgentConfig
         from pathlib import Path
-        cfg = TriageAgentConfig(artifacts_dir="artifacts")
+        cfg = TriageAgentConfig(_env_file=None, artifacts_dir="artifacts")
         assert Path(cfg.artifacts_dir).is_absolute()
 
     def test_absolute_artifacts_dir_unchanged(self) -> None:
         from triage_agent.config import TriageAgentConfig
-        cfg = TriageAgentConfig(artifacts_dir="/tmp/my_artifacts")
+        cfg = TriageAgentConfig(_env_file=None, artifacts_dir="/tmp/my_artifacts")
         assert cfg.artifacts_dir == "/tmp/my_artifacts"

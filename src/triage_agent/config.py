@@ -75,14 +75,14 @@ class TriageAgentConfig(BaseSettings):
 
     llm_api_key: str = ""  # Required in production for openai/anthropic providers.
     # Model filename for local vLLM/Ollama or model name for cloud providers.
-    llm_model: str = "qwen3-4b-instruct-2507.Q4_K_M.gguf"
+    llm_model: str = "openai/gpt-oss-20b"
     # Maximum seconds to wait for an LLM response before degraded-mode fallback.
     llm_timeout: int = 300
     # Env var: LLM_PROVIDER — selects LLM backend.
     # "openai": ChatOpenAI using llm_api_key + llm_model
     # "anthropic": ChatAnthropic using llm_api_key + llm_model
     # "local": ChatOpenAI with base_url for in-cluster vLLM/Ollama
-    llm_provider: Literal["openai", "anthropic", "local"] = "local"
+    llm_provider: Literal["openai", "anthropic", "local", "groq"] = "groq"
     # Env var: LLM_BASE_URL — OpenAI-compatible base URL for the local provider.
     # Defaults to the devcontainer llama.cpp server; override via LLM_BASE_URL for k8s.
     llm_base_url: str = "http://localhost:18080/v1"
@@ -93,6 +93,17 @@ class TriageAgentConfig(BaseSettings):
     # 400 provides a safe buffer while avoiding the inference overhead of a 4096
     # token generation budget on local quantized models.
     llm_max_tokens: int = 400
+
+    # ---- Groq-specific (only used when llm_provider == "groq") ----
+    # API key for the Groq inference API.  Required when llm_provider is "groq".
+    # Env var: GROQ_API_KEY
+    groq_api_key: str = ""
+    # Groq reasoning effort level.  Invalid values are rejected at startup.
+    # Maps to Groq's reasoning_effort parameter; "medium" balances speed and accuracy.
+    groq_reasoning_effort: Literal["low", "medium", "high"] = "medium"
+    # Max completion tokens for Groq calls.  Larger than the local default (400)
+    # because Groq cloud inference has no context-window cost penalty.
+    groq_max_tokens: int = 2048
 
     # -------------------------------------------------------------------------
     # agent_config — Pipeline Flow / Retry Logic

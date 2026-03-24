@@ -9,8 +9,10 @@ data:
   PROMETHEUS_URL: "http://kube-prom-kube-prometheus-prometheus.monitoring:9090"
   LOKI_URL: "http://loki.monitoring:3100"
   MCP_TIMEOUT: "3.0"
-  LLM_PROVIDER: "local"
-  LLM_MODEL: "qwen3-4b-instruct-2507.Q4_K_M.gguf"
-  LLM_BASE_URL: "http://qwen3-4b.ml-serving.svc.cluster.local/v1"
+  LLM_PROVIDER: "groq"
+  LLM_MODEL: "openai/gpt-oss-20b"
+  LLM_BASE_URL: "http://qwen3-4b.ml-serving.svc.cluster.local/v1"  # used when LLM_PROVIDER=local
   LLM_TIMEOUT: "300"
+  GROQ_REASONING_EFFORT: "medium"
+  GROQ_MAX_TOKENS: "2048"
   LANGSMITH_PROJECT: "5g-triage-agent"

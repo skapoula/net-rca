@@ -1,0 +1,13 @@
+NAME                       READY   STATUS    RESTARTS   AGE
+amf-8f76f76b9-k7d84        2/2     Running   0          7d8h
+ausf-557b995b7-xt64m       2/2     Running   0          61d
+mongodb-6796b4d5dc-hqhsq   1/1     Running   0          61d
+nrf-599b56f964-7spm5       2/2     Running   0          62d
+nssf-5bb644c4d7-92xfr      2/2     Running   0          61d
+pcf-f9775c644-c8vff        2/2     Running   0          61d
+smf-854f858746-m6jgq       2/2     Running   0          53d
+udm-58cc5c7d7c-q64rq       2/2     Running   0          61d
+udr-7456945f49-hnsnw       2/2     Running   0          61d
+ueransim-79f8cd5fd-kg4ml   11/11   Running   0          30m
+upf-9f5hz                  2/2     Running   0          61d
+webui-786f5c55bf-gkfkm     1/1     Running   0          61d

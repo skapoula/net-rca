@@ -1,0 +1,5 @@
+[PASS] 4.1: infra_score=0 < 0.3 (no false positive)
+[PASS] 4.1: LLM responded without timeout
+[PASS] 4.2 PASSED (root_nf=AMF layer=infrastructure confidence=0.95)
+[PASS] 4.3 PASSED (root_nf=AMF layer=application confidence=0.98)
+[FAIL] 4.4: root_nf=AMF not in [^SMF$]

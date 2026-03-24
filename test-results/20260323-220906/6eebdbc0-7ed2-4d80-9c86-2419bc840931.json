@@ -1,0 +1,33 @@
+{
+  "incident_id": "6eebdbc0-7ed2-4d80-9c86-2419bc840931",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "6eebdbc0-7ed2-4d80-9c86-2419bc840931",
+    "layer": "unknown",
+    "root_nf": "unknown",
+    "failure_mode": "llm_error",
+    "confidence": 0,
+    "evidence_chain": [],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UE",
+      "UPF",
+      "Old AMF",
+      "AMF",
+      "UDM",
+      "(R)AN",
+      "SEAF",
+      "SMF",
+      "UDM/ARPF",
+      "AUSF",
+      "New AMF"
+    ]
+  }
+}

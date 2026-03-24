@@ -1,0 +1,812 @@
+{
+  "AMF": [
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.0012176657143355943"
+      ]
+    },
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice/cri-containerd-89ee783bb1358554e302e99960b6c227bcf238a19c18713f00590ca6cd4ec7d3.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "89ee783bb1358554e302e99960b6c227bcf238a19c18713f00590ca6cd4ec7d3",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "container": "amf",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice/cri-containerd-829827ef7208a98f89d8ba8a7f08d314fa273044b0b44ed9968c885c3041e71c.scope",
+        "image": "docker.io/free5gc/amf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "829827ef7208a98f89d8ba8a7f08d314fa273044b0b44ed9968c885c3041e71c",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.0007755400139799425"
+      ]
+    },
+    {
+      "metric": {
+        "container": "opentelemetry-auto-instrumentation",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice/cri-containerd-4d0c30a2ab7391f9445255dc489ac40538d6e8851fb244ce3cd5f4c504879e25.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "4d0c30a2ab7391f9445255dc489ac40538d6e8851fb244ce3cd5f4c504879e25",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.0004538450047566645"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "25051136"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice/cri-containerd-89ee783bb1358554e302e99960b6c227bcf238a19c18713f00590ca6cd4ec7d3.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "89ee783bb1358554e302e99960b6c227bcf238a19c18713f00590ca6cd4ec7d3",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "196608"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "amf",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice/cri-containerd-829827ef7208a98f89d8ba8a7f08d314fa273044b0b44ed9968c885c3041e71c.scope",
+        "image": "docker.io/free5gc/amf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "829827ef7208a98f89d8ba8a7f08d314fa273044b0b44ed9968c885c3041e71c",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "16093184"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "opentelemetry-auto-instrumentation",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod4aa316f5_abfd_4644_ad8f_1a4b8c9edf1d.slice/cri-containerd-4d0c30a2ab7391f9445255dc489ac40538d6e8851fb244ce3cd5f4c504879e25.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "4d0c30a2ab7391f9445255dc489ac40538d6e8851fb244ce3cd5f4c504879e25",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "amf-8f76f76b9-dqqhx",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "8753152"
+      ]
+    }
+  ],
+  "UDM": [
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.0004538936064559505"
+      ]
+    },
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice/cri-containerd-ff4e1d63dfb819b9182075d6d424d89dc24b0b5bf0ac6aa09d80e99eab686a03.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "ff4e1d63dfb819b9182075d6d424d89dc24b0b5bf0ac6aa09d80e99eab686a03",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "container": "opentelemetry-auto-instrumentation",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice/cri-containerd-52295c5687843ec1664a3382793c89f2c3baaafdf3fa65f2a9777a578af52755.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "52295c5687843ec1664a3382793c89f2c3baaafdf3fa65f2a9777a578af52755",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.00039599672386712463"
+      ]
+    },
+    {
+      "metric": {
+        "container": "udm",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice/cri-containerd-2caf555fceb643701149c0b7a29b235466a5eab77ece24aa3fc03cda23d13515.scope",
+        "image": "docker.io/free5gc/udm:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "2caf555fceb643701149c0b7a29b235466a5eab77ece24aa3fc03cda23d13515",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.00005749036674029712"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "22523904"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice/cri-containerd-ff4e1d63dfb819b9182075d6d424d89dc24b0b5bf0ac6aa09d80e99eab686a03.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "ff4e1d63dfb819b9182075d6d424d89dc24b0b5bf0ac6aa09d80e99eab686a03",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "200704"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "opentelemetry-auto-instrumentation",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice/cri-containerd-52295c5687843ec1664a3382793c89f2c3baaafdf3fa65f2a9777a578af52755.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "52295c5687843ec1664a3382793c89f2c3baaafdf3fa65f2a9777a578af52755",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "8892416"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "udm",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cdffa9_083e_4780_a183_6bb94934ddf5.slice/cri-containerd-2caf555fceb643701149c0b7a29b235466a5eab77ece24aa3fc03cda23d13515.scope",
+        "image": "docker.io/free5gc/udm:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "2caf555fceb643701149c0b7a29b235466a5eab77ece24aa3fc03cda23d13515",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "udm-58cc5c7d7c-q64rq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "13369344"
+      ]
+    }
+  ],
+  "AUSF": [
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.00073636173384191"
+      ]
+    },
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice/cri-containerd-6d83d0bdd65bd296259fcd6411997bd604a67088ecc61212ed2aeb014246415a.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "6d83d0bdd65bd296259fcd6411997bd604a67088ecc61212ed2aeb014246415a",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "container": "ausf",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice/cri-containerd-0364714d8f072af15920e11a5c85382e32ee30d6010ffbabe7398054322d745c.scope",
+        "image": "docker.io/free5gc/ausf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "0364714d8f072af15920e11a5c85382e32ee30d6010ffbabe7398054322d745c",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.00023651862815747275"
+      ]
+    },
+    {
+      "metric": {
+        "container": "opentelemetry-auto-instrumentation",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice/cri-containerd-90ee067d2a1606c660804b4825bf479e637e41a9d932f41206a43fcfe4802b45.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "90ee067d2a1606c660804b4825bf479e637e41a9d932f41206a43fcfe4802b45",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.00047444986000108065"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "28446720"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice/cri-containerd-6d83d0bdd65bd296259fcd6411997bd604a67088ecc61212ed2aeb014246415a.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "6d83d0bdd65bd296259fcd6411997bd604a67088ecc61212ed2aeb014246415a",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "221184"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "ausf",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice/cri-containerd-0364714d8f072af15920e11a5c85382e32ee30d6010ffbabe7398054322d745c.scope",
+        "image": "docker.io/free5gc/ausf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "0364714d8f072af15920e11a5c85382e32ee30d6010ffbabe7398054322d745c",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "19312640"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "opentelemetry-auto-instrumentation",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod45a28b01_ce07_4737_8940_92cde821ff4a.slice/cri-containerd-90ee067d2a1606c660804b4825bf479e637e41a9d932f41206a43fcfe4802b45.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "90ee067d2a1606c660804b4825bf479e637e41a9d932f41206a43fcfe4802b45",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "ausf-557b995b7-xt64m",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "8851456"
+      ]
+    }
+  ],
+  "SMF": [
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.010224722410394611"
+      ]
+    },
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice/cri-containerd-60d6c9219c6d93f59e242ef840be4a966cb5b362cf3e5c95b7227815efa3f71c.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "60d6c9219c6d93f59e242ef840be4a966cb5b362cf3e5c95b7227815efa3f71c",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "container": "opentelemetry-auto-instrumentation",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice/cri-containerd-6c75cd92e8a2ad4bb94d540b2fa4012701cc6e3022cd21b5cefdf5ee86ab2943.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "6c75cd92e8a2ad4bb94d540b2fa4012701cc6e3022cd21b5cefdf5ee86ab2943",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.0005071940897387059"
+      ]
+    },
+    {
+      "metric": {
+        "container": "smf",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice/cri-containerd-ecd34e2407f661daecab18ae992e9832b30ec47824001216e982a2050a0171a8.scope",
+        "image": "docker.io/free5gc/smf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "ecd34e2407f661daecab18ae992e9832b30ec47824001216e982a2050a0171a8",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.01013901325628241"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "41377792"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice/cri-containerd-60d6c9219c6d93f59e242ef840be4a966cb5b362cf3e5c95b7227815efa3f71c.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "60d6c9219c6d93f59e242ef840be4a966cb5b362cf3e5c95b7227815efa3f71c",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "221184"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "opentelemetry-auto-instrumentation",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice/cri-containerd-6c75cd92e8a2ad4bb94d540b2fa4012701cc6e3022cd21b5cefdf5ee86ab2943.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "6c75cd92e8a2ad4bb94d540b2fa4012701cc6e3022cd21b5cefdf5ee86ab2943",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "8941568"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "smf",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8749c997_c9ed_4c52_8451_d1f3657c63f1.slice/cri-containerd-ecd34e2407f661daecab18ae992e9832b30ec47824001216e982a2050a0171a8.scope",
+        "image": "docker.io/free5gc/smf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "ecd34e2407f661daecab18ae992e9832b30ec47824001216e982a2050a0171a8",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "smf-854f858746-m6jgq",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "32153600"
+      ]
+    }
+  ],
+  "UPF": [
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice/cri-containerd-bfc2f8e1f15239fe9722d7802e80c3f3358344be6c9ec444c90b17c421b14b78.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "bfc2f8e1f15239fe9722d7802e80c3f3358344be6c9ec444c90b17c421b14b78",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0"
+      ]
+    },
+    {
+      "metric": {
+        "container": "opentelemetry-auto-instrumentation",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice/cri-containerd-c426b963bcf9c98e0310f10045c2aad7ff103008644c87662f78c85e2dcc82fb.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "c426b963bcf9c98e0310f10045c2aad7ff103008644c87662f78c85e2dcc82fb",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.0005820711729894336"
+      ]
+    },
+    {
+      "metric": {
+        "container": "upf",
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice/cri-containerd-711abbe2e3d171d7f492bf3372a0bc225575e3eedf825f2250ad022c22d17174.scope",
+        "image": "docker.io/free5gc/upf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "711abbe2e3d171d7f492bf3372a0bc225575e3eedf825f2250ad022c22d17174",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.007325376665999182"
+      ]
+    },
+    {
+      "metric": {
+        "cpu": "total",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "0.009320811120727654"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "23973888"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice/cri-containerd-bfc2f8e1f15239fe9722d7802e80c3f3358344be6c9ec444c90b17c421b14b78.scope",
+        "image": "docker.io/rancher/mirrored-pause:3.6",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "bfc2f8e1f15239fe9722d7802e80c3f3358344be6c9ec444c90b17c421b14b78",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "229376"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "opentelemetry-auto-instrumentation",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice/cri-containerd-c426b963bcf9c98e0310f10045c2aad7ff103008644c87662f78c85e2dcc82fb.scope",
+        "image": "ghcr.io/open-telemetry/opentelemetry-go-instrumentation/autoinstrumentation-go:v0.18.0-alpha",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "c426b963bcf9c98e0310f10045c2aad7ff103008644c87662f78c85e2dcc82fb",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "8835072"
+      ]
+    },
+    {
+      "metric": {
+        "__name__": "container_memory_working_set_bytes",
+        "container": "upf",
+        "endpoint": "https-metrics",
+        "id": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podce62bdec_b627_4f9d_94cf_e785d51ef54f.slice/cri-containerd-711abbe2e3d171d7f492bf3372a0bc225575e3eedf825f2250ad022c22d17174.scope",
+        "image": "docker.io/free5gc/upf:v4.2.0",
+        "instance": "10.0.1.2:10250",
+        "job": "kubelet",
+        "metrics_path": "/metrics/cadvisor",
+        "name": "711abbe2e3d171d7f492bf3372a0bc225575e3eedf825f2250ad022c22d17174",
+        "namespace": "5g-core",
+        "node": "pluto",
+        "pod": "upf-9f5hz",
+        "service": "kube-prom-kube-prometheus-kubelet"
+      },
+      "value": [
+        1773538014,
+        "14848000"
+      ]
+    }
+  ]
+}

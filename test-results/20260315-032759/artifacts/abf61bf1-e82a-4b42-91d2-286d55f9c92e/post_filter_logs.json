@@ -1,0 +1,97 @@
+{
+  "smf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:12.875860325Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773547032,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T03:57:12.875876194Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773547032,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:13.268271979Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773547033,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T03:57:13.268292453Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773547033,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:13.721783552Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773547033,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T03:57:13.721802995Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773547033,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ],
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:43.586353243Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773547063,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:43.988571871Z\u001b[33m [WARN][AMF][Gmm][amf_ue_ngap_id:RU:8,AU:18(3GPP)][supi:SUPI:] \u001b[0mAuthentication Failure Cause: Mac Failure",
+      "timestamp": 1773547063,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:43.988681120Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773547063,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:44.440790464Z\u001b[33m [WARN][AMF][Gmm][amf_ue_ngap_id:RU:9,AU:19(3GPP)][supi:SUPI:] \u001b[0mAuthentication Failure Cause: Mac Failure",
+      "timestamp": 1773547064,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:44.440955321Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773547064,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:44.917444534Z\u001b[33m [WARN][AMF][Gmm][amf_ue_ngap_id:RU:10,AU:20(3GPP)][supi:SUPI:] \u001b[0mAuthentication Failure Cause: Mac Failure",
+      "timestamp": 1773547064,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T03:57:44.917593103Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773547064,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

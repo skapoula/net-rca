@@ -1,0 +1,66 @@
+{
+  "incident_id": "7e0cf272-7078-48e5-aded-6821005ebd5f",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "7e0cf272-7078-48e5-aded-6821005ebd5f",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil (missing UE context in AMF)",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T12:22:47.880836741Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Repeated occurrence across multiple UE sessions indicates a failure in maintaining UE context, which is critical for PDU Session establishment"
+      },
+      {
+        "timestamp": "2026-03-16T12:22:48.398861457Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer (expected: Registration Request from UE)",
+        "significance": "UE registration request is being initiated by AMF, indicating a misalignment in the expected flow where UE should initiate registration"
+      },
+      {
+        "timestamp": "2026-03-16T12:22:48.961804559Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer (expected: Registration Request from UE)",
+        "significance": "Deviation shows AMF is starting timers without receiving UE registration request, suggesting missing UE context or protocol violation"
+      },
+      {
+        "timestamp": "2026-03-16T12:22:49.748345655Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer (expected: Registration Request from UE)",
+        "significance": "Consistent pattern of AMF initiating timers without UE input confirms a failure in UE context handling"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "PDU_Session_Establishment"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

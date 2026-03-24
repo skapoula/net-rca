@@ -1,0 +1,35 @@
+[PASS] All Free5GC pods Running
+[PASS] UERANSIM 11/11 containers ready
+[PASS] Prometheus: 8 scrape targets in 5g-core
+[PASS] Loki: 5 log streams from 5g-core
+[PASS] Local Memgraph reachable — 5836 node(s) in graph
+[PASS] Phase 0 PASSED — cluster + local Memgraph are ready
+[PASS] DAG loaded: dags/registration_general.cypher
+[PASS] DAG loaded: dags/authentication_5g_aka.cypher
+[PASS] DAG loaded: dags/pdu_session_establishment.cypher
+[PASS] Memgraph: 3 ReferenceTrace node(s) loaded
+[PASS] TriageAgent healthy at http://localhost:8000
+[PASS] Phase 0.5 COMPLETE — TriageAgent running locally (PID 1788841)
+[PASS] uvicorn process alive (PID 1788841)
+[PASS] Port 8000 is responding
+[PASS] DAG loaded: Registration_General
+[PASS] DAG loaded: Authentication_5G_AKA
+[PASS] DAG loaded: PDU_Session_Establishment
+[PASS] /health: healthy, memgraph=true, prometheus=true, loki=true
+[PASS] /health: status=healthy (ready)
+[PASS] Phase 1 PASSED — TriageAgent healthy and ready
+[PASS] Step 2.0: All 10 IMSIs registered and visible in Loki
+[PASS] DagMapper: mapping_confidence=0.8 (≥0.7), Registration_General mapped
+[PASS] InfraAgent: infra_score=0
+[PASS] NfMetricsAgent: post_filter_metrics.json has 5 NFs
+[PASS] NfLogsAgent: post_filter_logs.json has 2 NFs
+[PASS] UeTracesAgent: 90 CapturedTrace(s) in Memgraph
+[PASS] EvidenceQualityAgent: evidence_quality_score=0.95 (≥0.50)
+[PASS] RCAAgent: all 5 fields present, no llm_timeout
+[PASS] Phase 2 PASSED — all 7 components perform as designed
+[PASS] 3.1: Prometheus data for 5 NFs
+[PASS] 3.2: Loki data for 2 NFs
+[PASS] 3.3: 90 CapturedTrace node(s) in Memgraph
+[PASS] 3.4: Deviation detection ran without Cypher errors
+[PASS] 3.5: InfraAgent tokens within budget (~0 ≤ 400)
+[PASS] 3.6: DagMapper tokens within budget (~0 ≤ 800)

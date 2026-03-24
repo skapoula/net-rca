@@ -1,0 +1,66 @@
+{
+  "incident_id": "6c198655-225f-43e9-96d9-38cb7d0e558c",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "6c198655-225f-43e9-96d9-38cb7d0e558c",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil (missing UE context in AMF)",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-23T22:14:08.996051327Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Repeated occurrence across multiple UE registrations indicating a failure to establish or maintain UE context in AMF"
+      },
+      {
+        "timestamp": "2026-03-23T22:14:07.227408404Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer (expected: Generate AV in UDM/ARPF)",
+        "significance": "Deviation shows AMF initiating registration phase instead of UDM/ARPF, indicating a protocol flow error"
+      },
+      {
+        "timestamp": "2026-03-23T22:09:28.616718764Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "URR 1 is not in ChargingInfo map!",
+        "significance": "Secondary symptom suggesting SMF is not receiving valid UE data from AMF, indicating upstream failure"
+      },
+      {
+        "timestamp": "2026-03-23T22:14:09.679941637Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Temporal precedence confirms this is the earliest and most consistent anomaly in the registration flow"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UPF",
+      "AMF",
+      "UDM",
+      "Old AMF",
+      "(R)AN",
+      "UDM/ARPF",
+      "UE",
+      "New AMF",
+      "SEAF",
+      "SMF",
+      "AUSF"
+    ]
+  }
+}

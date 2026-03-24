@@ -1,0 +1,47 @@
+{
+  "smf": [],
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:00:21.326108514Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:6,AU:6(3GPP)][ran_addr:10.42.0.92:35875] \u001b[0mAmfUe is nil",
+      "timestamp": 1773669621,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:00:21.259554086Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:5,AU:5(3GPP)][ran_addr:10.42.0.92:35875] \u001b[0mAmfUe is nil",
+      "timestamp": 1773669621,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:00:20.579338936Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:4,AU:4(3GPP)][ran_addr:10.42.0.92:35875] \u001b[0mAmfUe is nil",
+      "timestamp": 1773669620,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:00:19.802647790Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:3,AU:3(3GPP)][ran_addr:10.42.0.92:35875] \u001b[0mAmfUe is nil",
+      "timestamp": 1773669619,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:00:19.741865019Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:2,AU:2(3GPP)][ran_addr:10.42.0.92:35875] \u001b[0mAmfUe is nil",
+      "timestamp": 1773669619,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:00:18.826336752Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:1,AU:1(3GPP)][ran_addr:10.42.0.92:35875] \u001b[0mAmfUe is nil",
+      "timestamp": 1773669618,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:14:08.996051327Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:10,AU:80(3GPP)][ran_addr:10.42.0.135:58474] \u001b[0mAmfUe is nil",
+      "timestamp": 1774304048,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:14:09.679941637Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:5,AU:75(3GPP)][ran_addr:10.42.0.135:58474] \u001b[0mAmfUe is nil",
+      "timestamp": 1774304049,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:14:09.741319175Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:6,AU:76(3GPP)][ran_addr:10.42.0.135:58474] \u001b[0mAmfUe is nil",
+      "timestamp": 1774304049,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:14:10.331243930Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:7,AU:77(3GPP)][ran_addr:10.42.0.135:58474] \u001b[0mAmfUe is nil",
+      "timestamp": 1774304050,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:14:10.660826668Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:8,AU:78(3GPP)][ran_addr:10.42.0.135:58474] \u001b[0mAmfUe is nil",
+      "timestamp": 1774304050,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:14:11.033534205Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:9,AU:79(3GPP)][ran_addr:10.42.0.135:58474] \u001b[0mAmfUe is nil",
+      "timestamp": 1774304051,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ],
+  "smf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:28.616718764Z\u001b[33m [WARN][SMF][PduSess] \u001b[0mURR 1 is not in ChargingInfo map!",
+      "timestamp": 1774303768,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:28.616727302Z\u001b[33m [WARN][SMF][PduSess] \u001b[0mURR 2 is not in ChargingInfo map!",
+      "timestamp": 1774303768,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

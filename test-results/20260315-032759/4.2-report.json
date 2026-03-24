@@ -1,0 +1,58 @@
+{
+  "incident_id": "75439a06-52ad-4cee-b006-8dcea848486c",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "75439a06-52ad-4cee-b006-8dcea848486c",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "SBI and metrics server stopped",
+    "confidence": 0.95,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T03:50:08.220304524Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "SBI server (listen on 0.0.0.0:8000) stopped",
+        "significance": "Indicates failure in SBI communication, which is critical during registration phase"
+      },
+      {
+        "timestamp": "2026-03-15T03:50:08.221274410Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Metrics server (listen on 0.0.0.0:9091) stopped",
+        "significance": "Secondary service failure in AMF, suggesting internal process or configuration issue"
+      },
+      {
+        "timestamp": "1773546608",
+        "source": "metrics",
+        "nf": "AMF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 26533888.0",
+        "significance": "AMF memory usage is within normal range, ruling out OOMKill as root cause"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UDM",
+      "UDM/ARPF",
+      "New AMF",
+      "SMF",
+      "(R)AN",
+      "AMF",
+      "Old AMF",
+      "SEAF",
+      "UE",
+      "UPF",
+      "AUSF"
+    ]
+  }
+}

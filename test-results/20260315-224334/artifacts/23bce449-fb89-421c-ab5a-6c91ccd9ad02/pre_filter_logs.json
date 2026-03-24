@@ -1,0 +1,160 @@
+{
+  "smf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:31.383781238Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614551,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:31.383797836Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614551,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:31.613870316Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614551,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:31.613891685Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614551,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:31.902283339Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614551,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:31.902300474Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614551,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:32.510444669Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614552,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:32.510461135Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614552,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:32.734067301Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614552,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:32.734091967Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614552,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:33.297582389Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614553,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:33.297599231Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614553,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:33.639727590Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614553,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:33.639744878Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614553,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:33.899228461Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614553,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:33.899249204Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614553,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:34.194426885Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614554,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:34.194444791Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614554,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:34.477652781Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1773614554,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-15T22:42:34.477670750Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1773614554,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ],
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:47.849537432Z\u001b[33m [WARN][AMF][Ngap] \u001b[0mRAN context has been removed[addr: <nil>]",
+      "timestamp": 1773614567,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:47.849823854Z\u001b[33m [WARN][AMF][Ngap] \u001b[0mRAN context has been removed[addr: <nil>]",
+      "timestamp": 1773614567,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

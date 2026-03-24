@@ -1,0 +1,66 @@
+{
+  "incident_id": "320437a5-3a25-4893-8fa4-43fbbe4643b0",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "320437a5-3a25-4893-8fa4-43fbbe4643b0",
+    "layer": "application",
+    "root_nf": "SMF",
+    "failure_mode": "BSF selection failure leading to fallback to NRF",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T03:28:30.923467183Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF selection failed: no BSF instances found",
+        "significance": "First observed BSF failure, indicates upstream dependency issue in registration phase"
+      },
+      {
+        "timestamp": "2026-03-15T03:28:30.923487000Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF query error (falling back to NRF): no BSF instances found",
+        "significance": "Confirmed fallback behavior, shows SMF cannot resolve BSF, indicating missing or unreachable BSF instance"
+      },
+      {
+        "timestamp": "2026-03-15T03:28:26.993387290Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Deviation: AV generation expected in UDM/ARPF, but initiated in AMF, indicating missing UDM/ARPF interaction"
+      },
+      {
+        "timestamp": "2026-03-15T03:28:27.574420251Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Multiple UE traces show AMF starting T3560 without UDM/ARPF involvement, indicating registration flow deviation"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UDM",
+      "UDM/ARPF",
+      "New AMF",
+      "SMF",
+      "(R)AN",
+      "AMF",
+      "Old AMF",
+      "SEAF",
+      "UE",
+      "UPF",
+      "AUSF"
+    ]
+  }
+}

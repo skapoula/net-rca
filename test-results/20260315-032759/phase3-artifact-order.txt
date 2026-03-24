@@ -1,0 +1,8 @@
+total 72
+-rw-r--r-- 1 coder coder   154 Mar 15 03:28 evidence_quality.json
+-rw-r--r-- 1 coder coder  3399 Mar 15 03:28 post_filter_logs.json
+-rw-r--r-- 1 coder coder 18173 Mar 15 03:28 pre_filter_logs.json
+-rw-r--r-- 1 coder coder 30888 Mar 15 03:28 pre_filter_metrics.json
+-rw-r--r-- 1 coder coder   348 Mar 15 03:28 post_filter_metrics.json
+-rw-r--r-- 1 coder coder    34 Mar 15 03:28 post_filter_infra.json
+-rw-r--r-- 1 coder coder   141 Mar 15 03:28 pre_filter_infra.json

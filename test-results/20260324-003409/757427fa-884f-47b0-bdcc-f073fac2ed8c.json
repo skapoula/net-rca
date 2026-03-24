@@ -1,0 +1,66 @@
+{
+  "incident_id": "757427fa-884f-47b0-bdcc-f073fac2ed8c",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "757427fa-884f-47b0-bdcc-f073fac2ed8c",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Missing AmfUe object during registration",
+    "confidence": 1,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-24T00:34:26.589828032Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "AmfUe is nil for UE with AU:111",
+        "significance": "Direct log error indicates AMF failed to establish UE context"
+      },
+      {
+        "timestamp": "2026-03-24T00:34:27.096294673Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "AmfUe is nil for UE with AU:112",
+        "significance": "Recurring pattern confirms AMF context failure"
+      },
+      {
+        "timestamp": "2026-03-24T00:34:27.456700684Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "AmfUe is nil for UE with AU:113",
+        "significance": "Multiple instances confirm AMF failure in UE registration"
+      },
+      {
+        "timestamp": "2026-03-24T00:34:29.659412030Z",
+        "source": "traces",
+        "nf": "AMF",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer instead of Generate AV",
+        "significance": "Deviation shows AMF skipping UDM/ARPF step in registration"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "AMF",
+      "Old AMF",
+      "UDM/ARPF",
+      "SMF",
+      "UDM",
+      "New AMF",
+      "UPF",
+      "(R)AN",
+      "UE",
+      "SEAF"
+    ]
+  }
+}

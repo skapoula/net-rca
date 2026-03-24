@@ -1,0 +1,6 @@
+[PASS] DAG loaded: dags/registration_general.cypher
+[PASS] DAG loaded: dags/authentication_5g_aka.cypher
+[PASS] DAG loaded: dags/pdu_session_establishment.cypher
+[PASS] Memgraph: 3 ReferenceTrace node(s) loaded
+[PASS] TriageAgent healthy at http://localhost:8000
+[PASS] Phase 0.5 COMPLETE — TriageAgent running locally (PID 1838997)

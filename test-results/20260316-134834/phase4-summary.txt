@@ -1,0 +1,4 @@
+  4.1:SUNNY_DAY:infra_score=0
+  4.2:REG_FAIL:PASS
+  4.3:AUTH_FAIL:PASS
+  4.4:PDU_FAIL:PASS

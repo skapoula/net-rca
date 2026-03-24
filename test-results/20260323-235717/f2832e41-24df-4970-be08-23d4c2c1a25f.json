@@ -1,0 +1,82 @@
+{
+  "incident_id": "f2832e41-24df-4970-be08-23d4c2c1a25f",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "f2832e41-24df-4970-be08-23d4c2c1a25f",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil - indicates failure to establish or maintain UE context in AMF",
+    "confidence": 1,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-23T23:57:33.928618667Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Recurrent warning in AMF logs indicates missing UE context, which is a critical failure during registration phase"
+      },
+      {
+        "timestamp": "2026-03-23T23:57:34.457533043Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Multiple instances of the same error pattern confirm a systemic issue in AMF's UE context handling"
+      },
+      {
+        "timestamp": "2026-03-23T23:57:34.978852406Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Recurrent occurrence across multiple UE registrations points to a logic or state management failure in AMF"
+      },
+      {
+        "timestamp": "2026-03-23T23:57:33.927772486Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Deviation shows AMF initiating registration phase actions (T3560) instead of UDM/ARPF, indicating failure to delegate to expected NF"
+      },
+      {
+        "timestamp": "2026-03-23T23:57:34.456676311Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Further confirms AMF is incorrectly handling registration flow, skipping UDM/ARPF as expected"
+      },
+      {
+        "timestamp": "2026-03-23T23:57:34.978218089Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Reinforces that AMF is not properly routing the registration to UDM/ARPF, violating DAG sequence"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UE",
+      "UPF",
+      "UDM",
+      "Old AMF",
+      "AMF",
+      "SEAF"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+[PASS] 4.1: infra_score=0 < 0.3 (no false positive)
+[PASS] 4.1: LLM responded without timeout
+[PASS] 4.2 PASSED (root_nf=AMF layer=infrastructure confidence=0.95)
+[FAIL] Incident 4066f036-83c4-47f6-967e-07c130d70345 did not complete within 1500s

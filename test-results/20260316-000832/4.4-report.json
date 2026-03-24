@@ -1,0 +1,66 @@
+{
+  "incident_id": "7d5ddf3c-c147-4ab3-b22a-d27563f02cfc",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "7d5ddf3c-c147-4ab3-b22a-d27563f02cfc",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil (missing UE context)",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T00:34:25.978425778Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil [amf_ue_ngap_id:RU:1,AU:21(3GPP)][ran_addr:10.42.0.63:55650]",
+        "significance": "Indicates missing UE context in AMF, which is a prerequisite for PDU session establishment"
+      },
+      {
+        "timestamp": "2026-03-16T00:34:26.548631091Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil [amf_ue_ngap_id:RU:2,AU:22(3GPP)][ran_addr:10.42.0.63:55650]",
+        "significance": "Multiple UE contexts missing, suggesting a systemic AMF failure to maintain UE state"
+      },
+      {
+        "timestamp": "2026-03-16T00:33:52.170424274Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer [amf_ue_ngap_id:RU:5,AU:25(3GPP)]",
+        "significance": "UE registration initiated but failed to establish proper UE context, indicating AMF failure to process registration or maintain state"
+      },
+      {
+        "timestamp": "2026-03-16T00:33:51.927807694Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000001/authentication-data/authentication-subscription",
+        "significance": "UE subscription data accessed before registration completion, suggesting out-of-order or misaligned sequence"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "PDU_Session_Establishment"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "smf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:07:31.599411267Z\u001b[33m [WARN][SMF][PduSess][pdu_session_id:1][supi:imsi-208930000000006] \u001b[0mUnexpected state, expect: [InActive], actual:[Active]",
+      "timestamp": 1773616051,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:07:31.944693907Z\u001b[33m [WARN][SMF][PduSess][pdu_session_id:1][supi:imsi-208930000000007] \u001b[0mUnexpected state, expect: [InActive], actual:[Active]",
+      "timestamp": 1773616051,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:07:32.132958118Z\u001b[33m [WARN][SMF][PduSess][pdu_session_id:1][supi:imsi-208930000000008] \u001b[0mUnexpected state, expect: [InActive], actual:[Active]",
+      "timestamp": 1773616052,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:07:32.630940384Z\u001b[33m [WARN][SMF][PduSess][pdu_session_id:1][supi:imsi-208930000000009] \u001b[0mUnexpected state, expect: [InActive], actual:[Active]",
+      "timestamp": 1773616052,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:07:33.095267870Z\u001b[33m [WARN][SMF][PduSess][pdu_session_id:1][supi:imsi-208930000000010] \u001b[0mUnexpected state, expect: [InActive], actual:[Active]",
+      "timestamp": 1773616053,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ],
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:08:07.862538877Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773616087,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:08:08.346775234Z\u001b[33m [WARN][AMF][Gmm][amf_ue_ngap_id:RU:8,AU:38(3GPP)][supi:SUPI:] \u001b[0mAuthentication Failure Cause: Mac Failure",
+      "timestamp": 1773616088,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:08:08.346905136Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773616088,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:08:08.696777386Z\u001b[33m [WARN][AMF][Gmm][amf_ue_ngap_id:RU:9,AU:39(3GPP)][supi:SUPI:] \u001b[0mAuthentication Failure Cause: Mac Failure",
+      "timestamp": 1773616088,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:08:08.696967639Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773616088,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:08:09.175098949Z\u001b[33m [WARN][AMF][Gmm][amf_ue_ngap_id:RU:10,AU:40(3GPP)][supi:SUPI:] \u001b[0mAuthentication Failure Cause: Mac Failure",
+      "timestamp": 1773616089,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T23:08:09.175289434Z\u001b[33m [WARN][AMF][Gmm] \u001b[0mReject authentication",
+      "timestamp": 1773616089,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

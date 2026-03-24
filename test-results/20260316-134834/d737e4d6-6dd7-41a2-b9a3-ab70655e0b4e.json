@@ -1,0 +1,66 @@
+{
+  "incident_id": "d737e4d6-6dd7-41a2-b9a3-ab70655e0b4e",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "d737e4d6-6dd7-41a2-b9a3-ab70655e0b4e",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Missing RAN context and failed UE registration initiation",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T14:17:55.017822970Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Indicates AMF failed to establish or maintain UE context, a critical prerequisite for PDU session establishment"
+      },
+      {
+        "timestamp": "2026-03-16T14:17:55.710440762Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "RAN context has been removed[addr: <nil>]",
+        "significance": "Confirms loss of RAN connection, preventing UE registration and subsequent PDU session setup"
+      },
+      {
+        "timestamp": "2026-03-16T14:17:54.861681277Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "UE registration process initiated at AMF instead of UE, indicating a protocol deviation and failure in expected sequence"
+      },
+      {
+        "timestamp": "2026-03-16T14:16:59.855706896Z",
+        "source": "logs",
+        "nf": "UPF",
+        "type": "log",
+        "content": "trToCh: txtr[10.43.235.41:8805-8148357] not found",
+        "significance": "UPF failure to find PFCP transaction channel, likely downstream of AMF failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "PDU_Session_Establishment"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

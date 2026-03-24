@@ -1,0 +1,66 @@
+{
+  "incident_id": "8e382039-688d-462e-bd10-2bd1145349e1",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "8e382039-688d-462e-bd10-2bd1145349e1",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "premature transport of 5GSM message to SMF before UDM/ARPF AV generation",
+    "confidence": 0.92,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T11:44:28.696668161Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Transport 5GSM Message to SMF",
+        "significance": "Deviation from expected AV generation in UDM/ARPF; AMF directly transporting SMF message indicates missing UDM/ARPF AV generation step"
+      },
+      {
+        "timestamp": "2026-03-16T11:44:28.708806218Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Transport 5GSM Message to SMF",
+        "significance": "Recurring deviation across multiple UEs, confirming pattern of missing UDM/ARPF AV generation"
+      },
+      {
+        "timestamp": "2026-03-16T11:44:28.735717537Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Transport 5GSM Message to SMF",
+        "significance": "Consistent failure pattern across multiple UE registrations, indicating a logic error in AMF registration flow"
+      },
+      {
+        "timestamp": "null",
+        "source": "metrics",
+        "nf": "AMF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 25161728.0",
+        "significance": "No memory pressure observed; rules out OOMKill or resource exhaustion as root cause"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.85,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

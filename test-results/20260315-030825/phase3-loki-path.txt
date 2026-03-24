@@ -1,0 +1,1 @@
+MCP path used (no fallback message in log)

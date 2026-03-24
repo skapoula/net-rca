@@ -1,0 +1,19 @@
+{
+  "smf": [],
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:47.849537432Z\u001b[33m [WARN][AMF][Ngap] \u001b[0mRAN context has been removed[addr: <nil>]",
+      "timestamp": 1773614567,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-15T22:42:47.849823854Z\u001b[33m [WARN][AMF][Ngap] \u001b[0mRAN context has been removed[addr: <nil>]",
+      "timestamp": 1773614567,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "incident_id": "aade8c95-cadb-4c95-ace7-91bd0bde9b4c",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "aade8c95-cadb-4c95-ace7-91bd0bde9b4c",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil during registration phase",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-23T21:36:32.503283574Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Repeated occurrence across multiple UEs indicates a failure in UE context management within AMF"
+      },
+      {
+        "timestamp": "2026-03-23T21:36:32.502569899Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "UE registration starts in AMF prematurely, bypassing expected UDM/ARPF phase, indicating a logic deviation in registration flow"
+      },
+      {
+        "timestamp": "2026-03-23T21:36:33.224874796Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Consistent deviation across multiple UEs confirms systemic issue in AMF registration handling"
+      },
+      {
+        "timestamp": "2026-03-23T21:36:33.232594431Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Multiple UEs show same deviation, indicating failure to properly initiate UDM/ARPF interaction"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

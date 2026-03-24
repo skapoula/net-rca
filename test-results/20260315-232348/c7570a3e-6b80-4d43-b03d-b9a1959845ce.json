@@ -1,0 +1,58 @@
+{
+  "incident_id": "c7570a3e-6b80-4d43-b03d-b9a1959845ce",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "c7570a3e-6b80-4d43-b03d-b9a1959845ce",
+    "layer": "application",
+    "root_nf": "AUSF",
+    "failure_mode": "authentication_failure",
+    "confidence": 0.92,
+    "evidence_chain": [
+      {
+        "timestamp": "alert_time-5m",
+        "source": "metrics",
+        "nf": "AUSF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 28532736.0",
+        "significance": "AUSF memory usage is within normal range, indicating no OOM or resource exhaustion"
+      },
+      {
+        "timestamp": "alert_time",
+        "source": "procedure_dag",
+        "nf": "Registration_General",
+        "type": "trace_deviation",
+        "content": "No UE trace deviations detected",
+        "significance": "No deviation from expected registration flow, suggesting no protocol-level failure in core path"
+      },
+      {
+        "timestamp": "alert_time",
+        "source": "application_evidence",
+        "nf": "AUSF",
+        "type": "metric",
+        "content": "AUSF memory usage is stable and not exceeding thresholds",
+        "significance": "No memory pressure or crash indicators in AUSF, ruling out infrastructure-triggered failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.85,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

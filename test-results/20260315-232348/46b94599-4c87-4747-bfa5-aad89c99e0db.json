@@ -1,0 +1,66 @@
+{
+  "incident_id": "46b94599-4c87-4747-bfa5-aad89c99e0db",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "46b94599-4c87-4747-bfa5-aad89c99e0db",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Authentication Failure Cause: Mac Failure",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T23:52:44.163959869Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Recurrent authentication failure with consistent Mac Failure cause across multiple UEs, indicating a protocol-level issue in AMF during authentication phase"
+      },
+      {
+        "timestamp": "2026-03-15T23:52:44.164120036Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "AMF explicitly rejects authentication, confirming failure in the authentication phase of PDU Session Establishment"
+      },
+      {
+        "timestamp": "2026-03-15T23:52:06.973777235Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000001/authentication-data/authentication-subscription",
+        "significance": "UE trace deviation shows request sent to UDR instead of UE, suggesting misrouting or incorrect NF selection, but does not directly cause Mac Failure"
+      },
+      {
+        "timestamp": "2026-03-15T23:52:07.049773253Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000002/authentication-data/authentication-subscription",
+        "significance": "Multiple UE traces show deviation to UDR, indicating potential configuration or routing issue, but not the root cause of Mac Failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "PDU_Session_Establishment"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

@@ -209,6 +209,39 @@ collect_traces() {
   log "Summary: $out_summary"
 }
 
+# ── Performance report generator ──────────────────────────────────────────────
+# Usage: generate_perf_report <phase_label>
+# Reads:  $RESULTS_DIR/traces-phase<N>.json  (written by collect_traces)
+# Writes: $RESULTS_DIR/lang_perf-report-*.{json,md}
+# Never fails the caller — always returns 0.
+generate_perf_report() {
+  local phase_label="$1"
+  local traces_file="$RESULTS_DIR/traces-phase${phase_label}.json"
+  local script_dir
+  script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  local report_script="${script_dir}/../generate_perf_report.py"
+
+  if [[ ! -f "$traces_file" ]]; then
+    log "generate_perf_report: traces file not found: $traces_file — skipping"
+    return 0
+  fi
+  if [[ ! -f "$report_script" ]]; then
+    log "generate_perf_report: script not found: $report_script — skipping"
+    return 0
+  fi
+
+  log "Generating LangSmith performance report for phase ${phase_label}..."
+  if python3 "$report_script" \
+      --traces "$traces_file" \
+      --results-dir "$RESULTS_DIR" \
+      --phase "$phase_label" 2>&1 | while IFS= read -r line; do log "  perf: $line"; done; then
+    pass "generate_perf_report phase${phase_label}: reports written to $RESULTS_DIR"
+  else
+    log "WARNING: generate_perf_report phase${phase_label} exited non-zero (non-fatal)"
+  fi
+  return 0
+}
+
 # ── Memgraph query helper ─────────────────────────────────────────────────────
 # Usage: mgquery <cypher_query>
 # Returns: mgconsole output

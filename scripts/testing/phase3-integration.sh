@@ -147,6 +147,7 @@ FINAL_STATUS=$(echo "$FINAL" | jq -r '.status')
 
 pull_artifacts "$NEW_INCIDENT"
 collect_traces "3" "$INCIDENT" "$NEW_INCIDENT"
+generate_perf_report "3" || true
 
 echo ""
 if [[ "$ERRORS" -eq 0 ]]; then

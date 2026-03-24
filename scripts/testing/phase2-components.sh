@@ -131,6 +131,7 @@ fi
 # ── Copy artifacts ────────────────────────────────────────────────────────────
 pull_artifacts "$INCIDENT"
 collect_traces "2" "$INCIDENT"
+generate_perf_report "2" || true
 
 echo ""
 if [[ "$ERRORS" -eq 0 ]]; then

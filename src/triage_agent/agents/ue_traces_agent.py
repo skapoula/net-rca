@@ -222,19 +222,39 @@ async def _fetch_imsi_trace_async(
     return contract_imsi_trace(raw, imsi)
 
 
-async def _build_traces_async(
-    imsis: list[str],
-    start: int,
-    end: int,
-) -> list[dict[str, Any]]:
-    """Fetch all per-IMSI traces concurrently with a single MCP health check."""
+async def _discover_and_build_traces_async(
+    discovery_logql: str,
+    discovery_start: int,
+    discovery_end: int,
+    trace_start: int,
+    trace_end: int,
+) -> tuple[list[str], list[dict[str, Any]]]:
+    """Discover IMSIs and fetch all per-IMSI traces in a single event loop.
+
+    Performs exactly one MCP health check, then runs the discovery query and
+    all per-IMSI trace fetches without creating additional event loops.
+    """
     use_mcp = await _check_mcp_available()
     if not use_mcp:
         logger.info("MCP server unavailable, using direct Loki for IMSI traces")
-    tasks = [
-        _fetch_imsi_trace_async(imsi, start, end, use_mcp) for imsi in imsis
-    ]
-    return list(await asyncio.gather(*tasks))
+
+    # Discovery query
+    if use_mcp:
+        discovery_logs = await _fetch_loki_logs_mcp(
+            discovery_logql, start=discovery_start, end=discovery_end
+        )
+    else:
+        discovery_logs = await _fetch_loki_logs_direct(
+            discovery_logql, start=discovery_start, end=discovery_end
+        )
+    imsis = extract_unique_imsis(discovery_logs)
+    if not imsis:
+        return [], []
+
+    # Per-IMSI traces — all concurrent, MCP choice already resolved
+    tasks = [_fetch_imsi_trace_async(imsi, trace_start, trace_end, use_mcp) for imsi in imsis]
+    traces = list(await asyncio.gather(*tasks))
+    return imsis, traces
 
 
 # ---------------------------------------------------------------------------
@@ -245,35 +265,17 @@ async def _build_traces_async(
 def ingest_traces_to_memgraph(
     traces: list[dict[str, Any]], incident_id: str
 ) -> None:
-    """Ingest per-IMSI traces into Memgraph as :CapturedTrace nodes."""
+    """Ingest per-IMSI traces into Memgraph using a single batch write."""
     if not traces:
         return
-
-    conn = get_memgraph()
-    for trace in traces:
-        conn.ingest_captured_trace(
-            incident_id,
-            trace["imsi"],
-            trace["events"],
-        )
+    get_memgraph().ingest_captured_traces_batch(incident_id, traces)
 
 
 def run_deviation_detection_for_dag(
     incident_id: str, dag_name: str
 ) -> list[dict[str, Any]]:
-    """Compare ingested traces against a single reference DAG in Memgraph."""
-    conn = get_memgraph()
-    imsi_records = conn.execute_cypher(
-        "MATCH (t:CapturedTrace {incident_id: $incident_id}) RETURN t.imsi AS imsi",
-        {"incident_id": incident_id},
-    )
-    deviations: list[dict[str, Any]] = []
-    for record in imsi_records:
-        imsi = record["imsi"]
-        deviation = conn.detect_deviation(incident_id, imsi, dag_name)
-        if deviation is not None:
-            deviations.append(deviation)
-    return deviations
+    """Compare all ingested traces against a reference DAG in a single query."""
+    return get_memgraph().detect_deviations_batch(incident_id, dag_name)
 
 
 # ---------------------------------------------------------------------------
@@ -297,26 +299,20 @@ def ue_traces_agent(state: TriageState) -> dict[str, Any]:
     cfg = get_config()
     alert_time = int(parse_timestamp(state["alert"]["startsAt"]))
 
-    # 1. IMSI discovery via Loki.
+    # 1+2. IMSI discovery + per-IMSI trace construction in a single event loop.
+    # One MCP health check, one discovery query, then all IMSI fetches concurrent.
     # Note: ue_traces_agent runs in the same parallel superstep as logs_agent,
     # so state["logs"] is not yet populated here. Discovery always uses Loki.
     discovery_logql = (
         f'{{k8s_namespace_name="{cfg.core_namespace}"}} |~ "(?i)imsi-"'
     )
-    discovery_logs = loki_query(
-        discovery_logql,
-        start=alert_time - cfg.imsi_discovery_window_seconds,
-        end=alert_time + cfg.imsi_discovery_window_seconds,
-    )
-    imsis = extract_unique_imsis(discovery_logs)
-
-    # 2. Per-IMSI trace construction (wider window: lookback + lookahead)
-    # All IMSIs are fetched concurrently; MCP availability is checked once.
-    traces = asyncio.run(
-        _build_traces_async(
-            imsis,
-            start=alert_time - cfg.imsi_trace_lookback_seconds,
-            end=alert_time + cfg.alert_lookahead_seconds,
+    imsis, traces = asyncio.run(
+        _discover_and_build_traces_async(
+            discovery_logql=discovery_logql,
+            discovery_start=alert_time - cfg.imsi_discovery_window_seconds,
+            discovery_end=alert_time + cfg.imsi_discovery_window_seconds,
+            trace_start=alert_time - cfg.imsi_trace_lookback_seconds,
+            trace_end=alert_time + cfg.alert_lookahead_seconds,
         )
     )
 

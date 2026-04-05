@@ -50,6 +50,31 @@ src/triage_agent/
 - **LLM**: Used only by RCAAgent for analysis. All other agents are deterministic.
 - **API**: FastAPI webhook endpoint on port 8000
 
+### Common Commands
+
+```bash
+# Install
+uv sync                              # preferred; uses uv.lock
+# or: pip install -e ".[dev]"        # fallback if uv unavailable
+
+# Lint + format + type-check
+uv run ruff check src/ tests/ && uv run ruff format src/ tests/
+uv run mypy src/ --strict
+
+# Tests
+uv run pytest tests/unit/ -v
+uv run pytest tests/integration/ --memgraph-url bolt://localhost:7687
+uv run pytest tests/e2e/ --alert-webhook http://localhost:8000/webhook
+
+# Run locally
+uv run uvicorn triage_agent.api.webhook:app --reload --port 8000
+
+# Load DAGs into Memgraph
+mgconsole < dags/registration_general.cypher
+mgconsole < dags/authentication_5g_aka.cypher
+mgconsole < dags/pdu_session_establishment.cypher
+```
+
 ### Key Conventions
 
 #### MANDATORY: Test-First Development
@@ -60,9 +85,9 @@ claude "Write pytest tests for xyz class... Don't implement yet."
 # 3. Generate implementation
 claude "Implement xyz to pass these tests: [paste tests]"
 # 4. Verify
-pytest tests/unit/test_xyz_agent.py -v
-mypy src/triage_agent/agents/xyz_agent.py --strict
-ruff check src/triage_agent/agents/xyz_agent.py
+uv run pytest tests/unit/test_xyz_agent.py -v
+uv run mypy src/triage_agent/agents/xyz_agent.py --strict
+uv run ruff check src/triage_agent/agents/xyz_agent.py
 # 5. Commit
 ```
 
@@ -107,23 +132,24 @@ MEMGRAPH_BOLT_URL=bolt://localhost:7687
 
 ### Running Tests
 ```bash
-pytest tests/unit/ -v
-pytest tests/integration/ --memgraph-url bolt://localhost:7687
-pytest tests/e2e/ --alert-webhook http://localhost:8000/webhook
+uv run pytest tests/unit/ -v
+uv run pytest tests/integration/ --memgraph-url bolt://localhost:7687
+uv run pytest tests/e2e/ --alert-webhook http://localhost:8000/webhook
 ```
 
 ### Building
 ```bash
-pip install -e ".[dev]"
+uv sync                              # install all dependencies (preferred — uses uv.lock)
+# or: pip install -e ".[dev]"        # fallback if uv is unavailable
 
 # Lint + format
-ruff check src/ tests/ && ruff format src/ tests/
+uv run ruff check src/ tests/ && uv run ruff format src/ tests/
 
 # Type-check
-mypy src/ --strict
+uv run mypy src/ --strict
 
 # Run locally
-uvicorn triage_agent.api.webhook:app --reload --port 8000
+uv run uvicorn triage_agent.api.webhook:app --reload --port 8000
 
 # Load DAGs into Memgraph
 mgconsole < dags/registration_general.cypher

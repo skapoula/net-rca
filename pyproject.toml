@@ -36,6 +36,16 @@ dev = [
 anthropic = [
     "langchain-anthropic>=0.3",
 ]
+docs = [
+    "sphinx>=7.4",
+    "markdown-it-py>=3.0,<4.0",
+    "myst-parser>=3.0,<5.0",
+    "sphinx-autodoc-typehints>=2.3",
+    "sphinx-autoapi>=3.3",
+    "sphinx-design>=0.6",
+    "sphinxcontrib-mermaid>=0.9",
+    "furo>=2024.8",
+]
 
 [project.scripts]
 triage-agent = "triage_agent.__main__:main"

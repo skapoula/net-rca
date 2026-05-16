@@ -1,0 +1,58 @@
+{
+  "incident_id": "dd211336-4066-4c9d-a534-7f6608be8ebd",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "dd211336-4066-4c9d-a534-7f6608be8ebd",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "SBI and metrics server stopped",
+    "confidence": 0.95,
+    "evidence_chain": [
+      {
+        "timestamp": "1773605828",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "SBI server (listen on 0.0.0.0:8000) stopped",
+        "significance": "Critical service disruption in AMF's SBI interface, which is essential for registration signaling with AUSF and other NFs"
+      },
+      {
+        "timestamp": "1773605828",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Metrics server (listen on 0.0.0.0:9091) stopped",
+        "significance": "Loss of internal monitoring capability, indicating potential instability or misconfiguration in AMF"
+      },
+      {
+        "timestamp": "1773605731",
+        "source": "logs",
+        "nf": "UPF",
+        "type": "log",
+        "content": "trToCh: txtr[10.43.235.41:8805-7733982] not found",
+        "significance": "Indicates upstream PFCP communication failure, likely due to AMF not properly establishing registration context"
+      }
+    ],
+    "infra_score": 1,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "AMF",
+      "SEAF",
+      "(R)AN",
+      "SMF",
+      "Old AMF",
+      "UPF",
+      "New AMF",
+      "UE",
+      "UDM",
+      "UDM/ARPF"
+    ]
+  }
+}

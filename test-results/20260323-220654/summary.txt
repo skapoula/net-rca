@@ -1,0 +1,6 @@
+[PASS] All Free5GC pods Running
+[PASS] UERANSIM 11/11 containers ready
+[PASS] Prometheus: 8 scrape targets in 5g-core
+[PASS] Loki: 5 log streams from 5g-core
+[PASS] Local Memgraph reachable — 45555 node(s) in graph
+[PASS] Phase 0 PASSED — cluster + local Memgraph are ready

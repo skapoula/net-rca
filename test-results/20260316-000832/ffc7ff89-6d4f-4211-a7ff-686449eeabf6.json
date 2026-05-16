@@ -1,0 +1,67 @@
+{
+  "incident_id": "ffc7ff89-6d4f-4211-a7ff-686449eeabf6",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "ffc7ff89-6d4f-4211-a7ff-686449eeabf6",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Mac Failure during authentication",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T00:20:29.309638053Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Recurrent Mac Failure logs indicate a consistent authentication failure at the AMF layer, directly tied to the Authentication_5G_AKA procedure."
+      },
+      {
+        "timestamp": "2026-03-16T00:20:29.309862252Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "AMF rejects authentication after detecting Mac Failure, confirming the failure mode in the authentication phase."
+      },
+      {
+        "timestamp": "2026-03-16T00:19:51.124641482Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000001/authentication-data/authentication-subscription",
+        "significance": "Deviation shows UE registration request being handled by UDR instead of UE, suggesting misrouting but not directly causing Mac Failure."
+      },
+      {
+        "timestamp": "2026-03-16T00:19:51.610899774Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000002/authentication-data/authentication-subscription",
+        "significance": "Multiple UE registration attempts routed to UDR, indicating potential configuration or routing issue, but not the root cause of Mac Failure."
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Authentication_5G_AKA",
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

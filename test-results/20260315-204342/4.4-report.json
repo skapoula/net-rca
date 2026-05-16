@@ -1,0 +1,66 @@
+{
+  "incident_id": "a1af577d-c3c5-4ac9-bc41-126e12ce50e7",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "a1af577d-c3c5-4ac9-bc41-126e12ce50e7",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Authentication Failure Cause: Mac Failure",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T21:09:26.658314062Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Recurrent authentication failure with Mac Failure cause, indicating protocol-level issue in AMF during GMM phase"
+      },
+      {
+        "timestamp": "2026-03-15T21:09:26.658474283Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "AMF explicitly rejects authentication after Mac Failure, confirming failure in authentication phase"
+      },
+      {
+        "timestamp": "2026-03-15T21:08:50.287054360Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000001/authentication-data/authentication-subscription",
+        "significance": "UE trace deviation shows subscription data accessed by UDR instead of UE, suggesting misrouting but not root cause"
+      },
+      {
+        "timestamp": "2026-03-15T21:08:50.321806320Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000002/authentication-data/authentication-subscription",
+        "significance": "Multiple UE registration attempts show UDR accessing auth data, indicating potential misconfiguration but not direct failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "PDU_Session_Establishment"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AMF",
+      "(R)AN",
+      "AUSF",
+      "New AMF",
+      "UDM",
+      "UDM/ARPF",
+      "Old AMF",
+      "SEAF",
+      "SMF",
+      "UPF",
+      "UE"
+    ]
+  }
+}

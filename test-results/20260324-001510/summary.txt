@@ -1,0 +1,9 @@
+[PASS] Step 2.0: All 10 IMSIs registered and visible in Loki
+[PASS] DagMapper: mapping_confidence=0.8 (≥0.7), Registration_General mapped
+[PASS] InfraAgent: infra_score=0
+[PASS] NfMetricsAgent: post_filter_metrics.json has 5 NFs
+[PASS] NfLogsAgent: post_filter_logs.json has 2 NFs
+[PASS] UeTracesAgent: 400 CapturedTrace(s) in Memgraph
+[PASS] EvidenceQualityAgent: evidence_quality_score=0.95 (≥0.50)
+[PASS] RCAAgent: all 5 fields present, no llm_timeout
+[PASS] Phase 2 PASSED — all 7 components perform as designed

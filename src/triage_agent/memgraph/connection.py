@@ -137,6 +137,33 @@ class MemgraphConnection:
             },
         )
 
+    def ingest_captured_traces_batch(
+        self,
+        incident_id: str,
+        traces: list[dict[str, Any]],
+    ) -> None:
+        """Ingest all IMSI traces for an incident in a single Bolt round-trip.
+
+        Each element of ``traces`` must have the shape produced by
+        ``contract_imsi_trace``: ``{"imsi": str, "events": list[dict]}``.
+        Replaces N sequential ``ingest_captured_trace`` calls with one query.
+        """
+        if not traces:
+            return
+        query = """
+        UNWIND $traces AS trace
+        CREATE (t:CapturedTrace {incident_id: $incident_id, imsi: trace.imsi})
+        WITH t, trace
+        UNWIND trace.events AS event
+        CREATE (t)-[:EVENT]->(e:TraceEvent {
+            order: event.order,
+            message: event.message,
+            timestamp: event.timestamp,
+            nf: event.nf
+        })
+        """
+        self.execute_cypher_write(query, {"incident_id": incident_id, "traces": traces})
+
     def detect_deviation(
         self,
         incident_id: str,
@@ -165,6 +192,47 @@ class MemgraphConnection:
             },
         )
         return results[0] if results else None
+
+    def detect_deviations_batch(
+        self,
+        incident_id: str,
+        dag_name: str,
+    ) -> list[dict[str, Any]]:
+        """Detect first deviation per IMSI against a DAG in a single query.
+
+        Replaces the N+1 pattern (one MATCH for all IMSIs + one detect_deviation
+        per IMSI) with a single Cypher query that returns one row per deviating
+        IMSI. Returns the same shape as the original list of ``detect_deviation``
+        results, with an added ``imsi`` field.
+        """
+        query = """
+        MATCH (ref:ReferenceTrace {name: $dag_name})-[:STEP]->(refStep:RefEvent)
+        MATCH (trace:CapturedTrace {incident_id: $incident_id})-[:EVENT]->(event:TraceEvent)
+        WHERE refStep.order = event.order
+          AND NOT event.message CONTAINS refStep.action
+        WITH trace.imsi AS imsi,
+             refStep.order    AS deviation_point,
+             refStep.action   AS expected,
+             event.message    AS actual,
+             refStep.nf       AS expected_nf,
+             event.nf         AS actual_nf
+        ORDER BY imsi, deviation_point
+        WITH imsi,
+             collect({
+                 deviation_point: deviation_point,
+                 expected: expected,
+                 actual: actual,
+                 expected_nf: expected_nf,
+                 actual_nf: actual_nf
+             })[0] AS first_dev
+        RETURN imsi,
+               first_dev.deviation_point AS deviation_point,
+               first_dev.expected        AS expected,
+               first_dev.actual          AS actual,
+               first_dev.expected_nf     AS expected_nf,
+               first_dev.actual_nf       AS actual_nf
+        """
+        return self.execute_cypher(query, {"dag_name": dag_name, "incident_id": incident_id})
 
     def cleanup_incident_traces(self, incident_id: str) -> None:
         """Remove all captured traces for an incident."""

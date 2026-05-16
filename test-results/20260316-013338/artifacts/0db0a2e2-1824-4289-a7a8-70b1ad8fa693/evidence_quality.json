@@ -1,0 +1,11 @@
+{
+  "score": 0.95,
+  "sources": [
+    "metrics",
+    "logs",
+    "traces"
+  ],
+  "metrics_present": true,
+  "logs_present": true,
+  "traces_ready": true
+}

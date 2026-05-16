@@ -1,0 +1,58 @@
+{
+  "incident_id": "0ef6febc-052b-47f9-a874-0f129021c55e",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "0ef6febc-052b-47f9-a874-0f129021c55e",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Authentication Failure due to MAC Failure",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T23:08:08.346775234Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Direct evidence of authentication failure at AMF, indicating a protocol-level issue in the GMM phase"
+      },
+      {
+        "timestamp": "2026-03-15T23:07:31.599411267Z",
+        "source": "logs",
+        "nf": "SMF",
+        "type": "log",
+        "content": "Unexpected state, expect: [InActive], actual:[Active]",
+        "significance": "SMF reports inconsistent state, likely a downstream consequence of failed authentication"
+      },
+      {
+        "timestamp": "2026-03-15T23:07:29.819227173Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "RegistrationType: Initial Registration",
+        "significance": "UE registration initiated at AMF instead of UE, indicating a deviation in expected flow"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "PDU_Session_Establishment"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

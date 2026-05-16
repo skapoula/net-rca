@@ -1,0 +1,50 @@
+{
+  "incident_id": "c5d41823-0862-4e99-b311-a55823db85b7",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "c5d41823-0862-4e99-b311-a55823db85b7",
+    "layer": "application",
+    "root_nf": "AUSF",
+    "failure_mode": "authentication_failure",
+    "confidence": 0.92,
+    "evidence_chain": [
+      {
+        "timestamp": "alert_time-5min",
+        "source": "metrics",
+        "nf": "AUSF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 27672576.0",
+        "significance": "AUSF memory usage is within normal range, ruling out memory exhaustion as root cause"
+      },
+      {
+        "timestamp": "alert_time",
+        "source": "application",
+        "nf": "AUSF",
+        "type": "trace_deviation",
+        "content": "UE Registration_General failure with no logs available",
+        "significance": "No logs to confirm specific failure, but registration general failure implies authentication or policy failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.85,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UDM",
+      "UDM/ARPF",
+      "New AMF",
+      "SMF",
+      "(R)AN",
+      "AMF",
+      "Old AMF",
+      "SEAF",
+      "UE",
+      "UPF",
+      "AUSF"
+    ]
+  }
+}

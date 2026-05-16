@@ -27,14 +27,10 @@ from triage_agent.config import get_config
 from triage_agent.mcp.client import MCPClient
 from triage_agent.memgraph.connection import get_memgraph
 from triage_agent.state import TriageState
-from triage_agent.utils import parse_loki_response, parse_timestamp
+from triage_agent.utils import extract_nf_from_pod_name, parse_loki_response, parse_timestamp
 
 logger = logging.getLogger(__name__)
 
-
-def extract_nf_from_pod_name(pod: str) -> str:
-    """Extract NF name prefix from a k8s pod name. Returns lowercase."""
-    return pod.split("-")[0].lower()
 
 
 # ---------------------------------------------------------------------------
@@ -151,22 +147,30 @@ async def _fetch_loki_logs_direct(
     return []
 
 
-def loki_query(logql: str, start: int, end: int) -> list[dict[str, Any]]:
+def loki_query(
+    logql: str,
+    start: int,
+    end: int,
+    use_mcp: bool | None = None,
+) -> list[dict[str, Any]]:
     """Execute a Loki query with two-path architecture.
 
-    1. Probe MCP server availability (lightweight /ready check).
+    1. Probe MCP server availability (lightweight /ready check) — skipped when
+       ``use_mcp`` is provided by the caller (allows batching a single health
+       check across many queries).
     2. If reachable → MCP path.
     3. If unreachable → direct Loki HTTP path.
     """
-    # Step 1: Health check
-    try:
-        use_mcp = asyncio.run(_check_mcp_available())
-    except Exception:
-        logger.warning(
-            "MCP health check failed, defaulting to direct Loki",
-            exc_info=True,
-        )
-        use_mcp = False
+    # Step 1: Health check (only when not provided by caller)
+    if use_mcp is None:
+        try:
+            use_mcp = asyncio.run(_check_mcp_available())
+        except Exception:
+            logger.warning(
+                "MCP health check failed, defaulting to direct Loki",
+                exc_info=True,
+            )
+            use_mcp = False
 
     # Step 2: Execute query on chosen path
     if use_mcp:
@@ -195,6 +199,64 @@ def loki_query(logql: str, start: int, end: int) -> list[dict[str, Any]]:
             return []
 
 
+async def _fetch_imsi_trace_async(
+    imsi: str,
+    start: int,
+    end: int,
+    use_mcp: bool,
+) -> dict[str, Any]:
+    """Fetch and contract a single IMSI trace asynchronously."""
+    logql = per_imsi_logql(imsi)
+    if use_mcp:
+        try:
+            raw = await _fetch_loki_logs_mcp(logql, start=start, end=end)
+        except Exception:
+            logger.warning(
+                "MCP query failed for IMSI %s, returning empty trace",
+                imsi,
+                exc_info=True,
+            )
+            raw = []
+    else:
+        raw = await _fetch_loki_logs_direct(logql, start=start, end=end)
+    return contract_imsi_trace(raw, imsi)
+
+
+async def _discover_and_build_traces_async(
+    discovery_logql: str,
+    discovery_start: int,
+    discovery_end: int,
+    trace_start: int,
+    trace_end: int,
+) -> tuple[list[str], list[dict[str, Any]]]:
+    """Discover IMSIs and fetch all per-IMSI traces in a single event loop.
+
+    Performs exactly one MCP health check, then runs the discovery query and
+    all per-IMSI trace fetches without creating additional event loops.
+    """
+    use_mcp = await _check_mcp_available()
+    if not use_mcp:
+        logger.info("MCP server unavailable, using direct Loki for IMSI traces")
+
+    # Discovery query
+    if use_mcp:
+        discovery_logs = await _fetch_loki_logs_mcp(
+            discovery_logql, start=discovery_start, end=discovery_end
+        )
+    else:
+        discovery_logs = await _fetch_loki_logs_direct(
+            discovery_logql, start=discovery_start, end=discovery_end
+        )
+    imsis = extract_unique_imsis(discovery_logs)
+    if not imsis:
+        return [], []
+
+    # Per-IMSI traces — all concurrent, MCP choice already resolved
+    tasks = [_fetch_imsi_trace_async(imsi, trace_start, trace_end, use_mcp) for imsi in imsis]
+    traces = list(await asyncio.gather(*tasks))
+    return imsis, traces
+
+
 # ---------------------------------------------------------------------------
 # Memgraph interactions
 # ---------------------------------------------------------------------------
@@ -203,50 +265,22 @@ def loki_query(logql: str, start: int, end: int) -> list[dict[str, Any]]:
 def ingest_traces_to_memgraph(
     traces: list[dict[str, Any]], incident_id: str
 ) -> None:
-    """Ingest per-IMSI traces into Memgraph as :CapturedTrace nodes."""
+    """Ingest per-IMSI traces into Memgraph using a single batch write."""
     if not traces:
         return
-
-    conn = get_memgraph()
-    for trace in traces:
-        conn.ingest_captured_trace(
-            incident_id,
-            trace["imsi"],
-            trace["events"],
-        )
+    get_memgraph().ingest_captured_traces_batch(incident_id, traces)
 
 
 def run_deviation_detection_for_dag(
     incident_id: str, dag_name: str
 ) -> list[dict[str, Any]]:
-    """Compare ingested traces against a single reference DAG in Memgraph."""
-    conn = get_memgraph()
-    imsi_records = conn.execute_cypher(
-        "MATCH (t:CapturedTrace {incident_id: $incident_id}) RETURN t.imsi AS imsi",
-        {"incident_id": incident_id},
-    )
-    deviations: list[dict[str, Any]] = []
-    for record in imsi_records:
-        imsi = record["imsi"]
-        deviation = conn.detect_deviation(incident_id, imsi, dag_name)
-        if deviation is not None:
-            deviations.append(deviation)
-    return deviations
+    """Compare all ingested traces against a reference DAG in a single query."""
+    return get_memgraph().detect_deviations_batch(incident_id, dag_name)
 
 
 # ---------------------------------------------------------------------------
 # Agent entry point
 # ---------------------------------------------------------------------------
-
-
-def _imsis_from_state_logs(logs: dict[str, list[dict[str, Any]]]) -> list[str]:
-    """Extract IMSIs from already-fetched state.logs (avoid duplicate Loki query)."""
-    entries: list[dict[str, Any]] = []
-    for nf_entries in logs.values():
-        for entry in nf_entries:
-            msg = entry.get("message") or entry.get("log") or ""
-            entries.append({"message": msg})
-    return extract_unique_imsis(entries)
 
 
 @traceable(name="UeTracesAgent")
@@ -265,32 +299,22 @@ def ue_traces_agent(state: TriageState) -> dict[str, Any]:
     cfg = get_config()
     alert_time = int(parse_timestamp(state["alert"]["startsAt"]))
 
-    # 1. Try state.logs first to avoid duplicate Loki query.
-    state_logs = state.get("logs") or {}
-    imsis = _imsis_from_state_logs(state_logs) if state_logs else []
-
-    if not imsis:
-        # Fall back to broad Loki discovery query.
-        discovery_logql = (
-            f'{{k8s_namespace_name="{cfg.core_namespace}"}} |~ "(?i)imsi-"'
+    # 1+2. IMSI discovery + per-IMSI trace construction in a single event loop.
+    # One MCP health check, one discovery query, then all IMSI fetches concurrent.
+    # Note: ue_traces_agent runs in the same parallel superstep as logs_agent,
+    # so state["logs"] is not yet populated here. Discovery always uses Loki.
+    discovery_logql = (
+        f'{{k8s_namespace_name="{cfg.core_namespace}"}} |~ "(?i)imsi-"'
+    )
+    imsis, traces = asyncio.run(
+        _discover_and_build_traces_async(
+            discovery_logql=discovery_logql,
+            discovery_start=alert_time - cfg.imsi_discovery_window_seconds,
+            discovery_end=alert_time + cfg.imsi_discovery_window_seconds,
+            trace_start=alert_time - cfg.imsi_trace_lookback_seconds,
+            trace_end=alert_time + cfg.alert_lookahead_seconds,
         )
-        discovery_logs = loki_query(
-            discovery_logql,
-            start=alert_time - cfg.imsi_discovery_window_seconds,
-            end=alert_time + cfg.imsi_discovery_window_seconds,
-        )
-        imsis = extract_unique_imsis(discovery_logs)
-
-    # 2. Per-IMSI trace construction (wider window: lookback + lookahead)
-    traces: list[dict[str, Any]] = []
-    for imsi in imsis:
-        logql = per_imsi_logql(imsi)
-        raw_trace = loki_query(
-            logql,
-            start=alert_time - cfg.imsi_trace_lookback_seconds,
-            end=alert_time + cfg.alert_lookahead_seconds,
-        )
-        traces.append(contract_imsi_trace(raw_trace, imsi))
+    )
 
     # 3. Ingest into Memgraph
     ingest_traces_to_memgraph(traces, state["incident_id"])

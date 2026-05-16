@@ -1,0 +1,58 @@
+{
+  "incident_id": "722c082e-8883-48fd-bae7-a72624f0d5b9",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "722c082e-8883-48fd-bae7-a72624f0d5b9",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "SBI and metrics server stopped",
+    "confidence": 0.95,
+    "evidence_chain": [
+      {
+        "timestamp": "1773583413",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Metrics server (listen on 0.0.0.0:9091) stopped",
+        "significance": "Indicates service disruption in AMF's internal monitoring, likely blocking registration state tracking"
+      },
+      {
+        "timestamp": "1773583413",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "SBI server (listen on 0.0.0.0:8000) stopped",
+        "significance": "Critical failure in SBI communication, preventing AMF from exchanging registration data with other NFs"
+      },
+      {
+        "timestamp": "1773583413",
+        "source": "metrics",
+        "nf": "AMF",
+        "type": "metric",
+        "content": "23326720.0 bytes",
+        "significance": "AMF memory usage is within normal range, ruling out OOMKill or memory exhaustion as root cause"
+      }
+    ],
+    "infra_score": 0.2,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UE",
+      "UDM/ARPF",
+      "(R)AN",
+      "UDM",
+      "UPF",
+      "SMF",
+      "AUSF",
+      "Old AMF",
+      "SEAF",
+      "New AMF",
+      "AMF"
+    ]
+  }
+}

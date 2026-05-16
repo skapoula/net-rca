@@ -75,19 +75,35 @@ class TriageAgentConfig(BaseSettings):
 
     llm_api_key: str = ""  # Required in production for openai/anthropic providers.
     # Model filename for local vLLM/Ollama or model name for cloud providers.
-    llm_model: str = "qwen3-4b-instruct-2507.Q4_K_M.gguf"
+    llm_model: str = "openai/gpt-oss-20b"
     # Maximum seconds to wait for an LLM response before degraded-mode fallback.
     llm_timeout: int = 300
     # Env var: LLM_PROVIDER — selects LLM backend.
     # "openai": ChatOpenAI using llm_api_key + llm_model
     # "anthropic": ChatAnthropic using llm_api_key + llm_model
     # "local": ChatOpenAI with base_url for in-cluster vLLM/Ollama
-    llm_provider: Literal["openai", "anthropic", "local"] = "local"
+    llm_provider: Literal["openai", "anthropic", "local", "groq"] = "groq"
     # Env var: LLM_BASE_URL — OpenAI-compatible base URL for the local provider.
-    # Defaults to the in-cluster Qwen3-4b KServe ClusterIP service (port 80).
-    llm_base_url: str = "http://qwen3-4b.ml-serving.svc.cluster.local/v1"
+    # Defaults to the devcontainer llama.cpp server; override via LLM_BASE_URL for k8s.
+    llm_base_url: str = "http://localhost:18080/v1"
     # Sampling temperature.  Near-zero maximises determinism for structured JSON output.
     llm_temperature: float = 0.1
+    # Max tokens the LLM may generate per call.  The RCA JSON output (layer,
+    # root_nf, failure_mode, 2-4 evidence items, confidence) is ~200-350 tokens.
+    # 400 provides a safe buffer while avoiding the inference overhead of a 4096
+    # token generation budget on local quantized models.
+    llm_max_tokens: int = 400
+
+    # ---- Groq-specific (only used when llm_provider == "groq") ----
+    # API key for the Groq inference API.  Required when llm_provider is "groq".
+    # Env var: GROQ_API_KEY
+    groq_api_key: str = ""
+    # Groq reasoning effort level.  Invalid values are rejected at startup.
+    # Maps to Groq's reasoning_effort parameter; "medium" balances speed and accuracy.
+    groq_reasoning_effort: Literal["low", "medium", "high"] = "medium"
+    # Max completion tokens for Groq calls.  Larger than the local default (400)
+    # because Groq cloud inference has no context-window cost penalty.
+    groq_max_tokens: int = 2048
 
     # -------------------------------------------------------------------------
     # agent_config — Pipeline Flow / Retry Logic
@@ -183,13 +199,14 @@ class TriageAgentConfig(BaseSettings):
 
     # --- Evidence compression token budgets ---
     # Token budget per evidence section (1 token ≈ 4 chars).
-    # Total target: ~3500 tokens for all evidence sections combined,
-    # leaving room for the prompt template (~400 tokens) and LLM response.
-    rca_token_budget_infra: int = 400
-    rca_token_budget_dag: int = 800
-    rca_token_budget_metrics: int = 500
-    rca_token_budget_logs: int = 1300
-    rca_token_budget_traces: int = 500
+    # Total target: ~2200 tokens for all evidence sections combined.
+    # Sized for qwen3-4b (n_ctx=4096): prompt template (~500) + evidence (~2200)
+    # + LLM output reserve (~512) = ~3212, safely under 4096.
+    rca_token_budget_infra: int = 250
+    rca_token_budget_dag: int = 500
+    rca_token_budget_metrics: int = 300
+    rca_token_budget_logs: int = 800
+    rca_token_budget_traces: int = 300
     # Max chars per individual log message before truncation.
     rca_log_max_message_chars: int = 200
     # Max trace deviations per DAG name before truncation.
@@ -237,6 +254,18 @@ class TriageAgentConfig(BaseSettings):
     # Application version returned in API metadata endpoints.
     # Should match pyproject.toml; update on each release.
     app_version: str = "3.2.0"
+
+    # Log noise filtering: entries whose message matches any of these patterns
+    # (wildcard * supported, case-insensitive) are excluded from evidence even
+    # when they would otherwise qualify as ERROR/WARN/FATAL.
+    # Use to suppress persistent chatter from undeployed NFs (e.g. BSF in open5GS).
+    # JSON list via env: LOG_NOISE_PATTERNS='["*custom pattern*"]'
+    log_noise_patterns: list[str] = [
+        "*BSF selection failed*",
+        "*no BSF instances found*",
+        "*BSF query error*",
+        "*BSF not found*",
+    ]
 
     model_config = {
         "env_prefix": "",

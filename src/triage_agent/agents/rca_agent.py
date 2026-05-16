@@ -7,6 +7,7 @@ Produces root_nf, failure_mode, confidence, evidence_chain.
 
 import json
 import logging
+import time
 from typing import Any, Literal
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -34,26 +35,14 @@ class EvidenceItem(BaseModel):
     significance: str
 
 
-class Hypothesis(BaseModel):
-    """Alternative hypothesis for root cause."""
-
-    layer: Literal["infrastructure", "application"]
-    nf: str
-    failure_mode: str
-    confidence: float = Field(ge=0.0, le=1.0)
-
-
 class RCAOutput(BaseModel):
     """Structured output from RCA LLM analysis."""
 
     layer: Literal["infrastructure", "application"]
     root_nf: str
     failure_mode: str
-    failed_phase: str | None
     confidence: float = Field(ge=0.0, le=1.0)
     evidence_chain: list[EvidenceItem]
-    alternative_hypotheses: list[Hypothesis]
-    reasoning: str
 
 
 # --- LLM Prompt Template ---
@@ -98,40 +87,42 @@ ANALYSIS FRAMEWORK:
    - Application root cause: NF logic errors, protocol failures, data validation errors
    - Infrastructure-triggered application: Infra issue causes cascading app failures
 
-EXAMPLES:
-- High infra_score (0.90) + OOMKill event + no app errors before crash
-  -> Infrastructure layer, root_nf = pod
-- Medium infra_score (0.55) + memory pressure + auth timeout logs
-  -> Application layer, root_nf = AUSF (app error, not infra)
-- Low infra_score (0.15) + authentication failure logs
-  -> Application layer, root_nf = identified from logs
+CONFIDENCE FORMULA — compute confidence mechanically before writing the JSON:
+  start = 0.50
+  +0.20 if the same error pattern appears in 3 or more log entries from the root_nf
+  +0.20 if trace_deviations exist and confirm the same root_nf deviates from the DAG
+  +0.10 if evidence_quality_score >= 0.90
+  +0.05 if infra_score == 0 and root cause is clearly application-layer
+  -0.20 if evidence comes from only one source and fewer than 3 entries total
+  confidence = max(0.0, min(1.0, start + adjustments))
 
-Return ONLY a JSON object:
+Example calculations:
+- infra_score=0.0, 6× "AmfUe is nil" from AMF, trace deviations confirm AMF, quality=0.95
+  → 0.50 +0.20 +0.20 +0.10 +0.05 = 1.00  → confidence=1.00
+- infra_score=0.90, OOMKill only, no app errors
+  → 0.50 +0.20 +0.05 = 0.75  → confidence=0.75
+- infra_score=0.0, single auth-timeout log, no traces
+  → 0.50 -0.20 = 0.30  → confidence=0.30
+
+Return ONLY a JSON object with no markdown or extra text.
+Include 2-4 evidence_chain items maximum (the most significant ones only).
+Keep each "significance" value to ≤ 20 words.
+List evidence_chain first, then apply the CONFIDENCE FORMULA to set confidence:
 {{
   "layer": "infrastructure|application",
   "root_nf": "<NF name or 'pod-level' for infrastructure>",
-  "failure_mode": "<from DAG failure_patterns or infrastructure event>",
-  "failed_phase": "<phase_id where failure occurred, or null for infra>",
-  "confidence": <0.0-1.0>,
+  "failure_mode": "<concise description, ≤ 15 words>",
   "evidence_chain": [
     {{
-      "timestamp": "...",
+      "timestamp": "<ISO timestamp>",
       "source": "infrastructure|metrics|logs|traces",
-      "nf": "...",
+      "nf": "<NF name>",
       "type": "log|metric|event|trace_deviation",
-      "content": "...",
-      "significance": "..."
+      "content": "<brief excerpt, ≤ 20 words>",
+      "significance": "<≤ 20 words: why this implicates root_nf>"
     }}
   ],
-  "alternative_hypotheses": [
-    {{
-      "layer": "...",
-      "nf": "...",
-      "failure_mode": "...",
-      "confidence": <0.0-1.0>
-    }}
-  ],
-  "reasoning": "<explanation combining infra findings + app evidence + trace deviations + temporal causality>"
+  "confidence": <apply CONFIDENCE FORMULA after listing evidence_chain above>
 }}
 """
 
@@ -139,19 +130,19 @@ Return ONLY a JSON object:
 def format_metrics_for_prompt(metrics: dict[str, Any] | None) -> str:
     if not metrics:
         return "No metrics available."
-    return json.dumps(metrics, indent=2)
+    return json.dumps(metrics, separators=(",", ":"))
 
 
 def format_logs_for_prompt(logs: dict[str, Any] | None) -> str:
     if not logs:
         return "No logs available."
-    return json.dumps(logs, indent=2)
+    return json.dumps(logs, separators=(",", ":"))
 
 
 def format_trace_deviations_for_prompt(deviations: dict[str, list[dict[str, Any]]] | None) -> str:
     if not deviations:
         return "No UE trace deviations available."
-    return json.dumps(deviations, indent=2)
+    return json.dumps(deviations, separators=(",", ":"))
 
 
 # ---------------------------------------------------------------------------
@@ -181,8 +172,8 @@ def compress_evidence(state: "TriageState") -> dict[str, str]:
         state.get("trace_deviations"), cfg.rca_token_budget_traces
     )
     return {
-        "infra_findings_json": json.dumps(state.get("infra_findings") or {}, indent=2),
-        "dag_json": json.dumps(compressed_dags, indent=2),
+        "infra_findings_json": json.dumps(state.get("infra_findings") or {}, separators=(",", ":")),
+        "dag_json": json.dumps(compressed_dags, separators=(",", ":")),
         "metrics_formatted": format_metrics_for_prompt(state.get("metrics")),
         "logs_formatted": format_logs_for_prompt(state.get("logs")),
         "trace_deviations_formatted": format_trace_deviations_for_prompt(compressed_traces),
@@ -207,15 +198,20 @@ def create_llm(
     api_key: str,
     timeout: int,
     base_url: str = "",
+    groq_api_key: str = "",
+    reasoning_effort: str = "",
 ) -> Any:
     """Factory: construct the appropriate LangChain chat model.
 
     Args:
-        provider: One of "openai", "anthropic", "local"
+        provider: One of "openai", "anthropic", "local", "groq"
         model: Model name string (provider-specific)
         api_key: API key; empty string allowed for local provider
         timeout: Request timeout in seconds
         base_url: Only used for "local" provider
+        groq_api_key: API key for Groq; only used when provider == "groq"
+        reasoning_effort: Groq reasoning effort ("none"/"low"/"medium"/"high");
+            only used when provider == "groq" and non-empty
 
     Returns:
         A LangChain chat model with .invoke() method
@@ -223,6 +219,7 @@ def create_llm(
     Raises:
         ImportError: If provider == "anthropic" and langchain-anthropic is not installed
         ValueError: If provider == "local" and base_url is empty, or unknown provider
+        ValueError: If provider == "groq" and groq_api_key is empty
     """
     temperature = get_config().llm_temperature
     if provider == "openai":
@@ -231,7 +228,7 @@ def create_llm(
             api_key=SecretStr(api_key) if api_key else None,
             temperature=temperature,
             timeout=timeout,
-            model_kwargs={"max_tokens": 4096},
+            model_kwargs={"max_tokens": get_config().llm_max_tokens},
             streaming=True,
         )
     elif provider == "anthropic":
@@ -247,7 +244,7 @@ def create_llm(
             api_key=SecretStr(api_key) if api_key else None,
             temperature=temperature,
             timeout=timeout,
-            max_tokens=4096,
+            max_tokens=get_config().llm_max_tokens,
             streaming=True,
         )
     elif provider == "local":
@@ -263,7 +260,25 @@ def create_llm(
             base_url=base_url,
             temperature=temperature,
             timeout=timeout,
-            model_kwargs={"max_tokens": 4096},
+            model_kwargs={"max_tokens": get_config().llm_max_tokens, "response_format": {"type": "json_object"}},
+            streaming=True,
+        )
+    elif provider == "groq":
+        if not groq_api_key:
+            raise ValueError(
+                "groq_api_key must be set when llm_provider is 'groq'. "
+                "Set GROQ_API_KEY env var to your Groq API key."
+            )
+        _groq_kwargs: dict[str, Any] = {"max_tokens": get_config().groq_max_tokens}
+        if reasoning_effort:
+            _groq_kwargs["reasoning_effort"] = reasoning_effort
+        return ChatOpenAI(
+            model=model,
+            api_key=SecretStr(groq_api_key),
+            base_url="https://api.groq.com/openai/v1",
+            temperature=temperature,
+            timeout=timeout,
+            model_kwargs=_groq_kwargs,
             streaming=True,
         )
     else:
@@ -287,13 +302,15 @@ def llm_analyze_evidence(prompt: str, timeout: int | None = None) -> dict[str, A
     config = get_config()
     timeout_val = timeout or config.llm_timeout
 
-    # Initialize LLM client via factory (supports openai / anthropic / local)
+    # Initialize LLM client via factory (supports openai / anthropic / local / groq)
     llm = create_llm(
         provider=config.llm_provider,
         model=config.llm_model,
         api_key=config.llm_api_key,
         timeout=timeout_val,
         base_url=config.llm_base_url,
+        groq_api_key=config.groq_api_key,
+        reasoning_effort=config.groq_reasoning_effort if config.llm_provider == "groq" else "",
     )
 
     messages = [
@@ -422,12 +439,78 @@ def rca_agent_first_attempt(state: TriageState) -> dict[str, Any]:
             "needs_more_evidence": False,
             "evidence_gaps": ["LLM analysis unavailable due to timeout"],
         }
+    except Exception as e:
+        # Malformed JSON or other unexpected LLM output error (including 503 "Loading model").
+        # Retry if we have attempts remaining; otherwise degrade gracefully.
+        attempt = state.get("attempt_count", 1)
+        cfg = get_config()
+        will_retry = attempt < cfg.max_attempts
+        logger.warning(
+            "LLM returned invalid output for incident %s (attempt %d, retry=%s): %s",
+            state.get("incident_id"),
+            attempt,
+            will_retry,
+            e,
+        )
+        # For 503 "Loading model" errors, back off before retry so the model
+        # has time to finish loading (llama.cpp cold-start after long inference).
+        if will_retry and ("503" in str(e) or "loading model" in str(e).lower()):
+            logger.info(
+                "LLM returned 503 Loading model for incident %s — sleeping 60s before retry",
+                state.get("incident_id"),
+            )
+            time.sleep(60)
+        return {
+            "root_nf": "unknown",
+            "failure_mode": "llm_error",
+            "confidence": 0.0,
+            "evidence_chain": [],
+            "layer": "unknown",
+            "needs_more_evidence": will_retry,
+            "evidence_gaps": [f"LLM output error: {type(e).__name__}"],
+        }
 
-    root_nf = analysis["root_nf"]
-    failure_mode = analysis["failure_mode"]
-    confidence = analysis["confidence"]
+    try:
+        root_nf = analysis["root_nf"]
+        failure_mode = analysis["failure_mode"]
+        confidence = analysis["confidence"]
+    except KeyError as e:
+        attempt = state.get("attempt_count", 1)
+        cfg_ke = get_config()
+        will_retry = attempt < cfg_ke.max_attempts
+        logger.warning(
+            "LLM response missing required key for incident %s (attempt %d, retry=%s): %s",
+            state.get("incident_id"),
+            attempt,
+            will_retry,
+            e,
+        )
+        return {
+            "root_nf": "unknown",
+            "failure_mode": "llm_error",
+            "confidence": 0.0,
+            "evidence_chain": [],
+            "layer": "unknown",
+            "needs_more_evidence": will_retry,
+            "evidence_gaps": [f"LLM output missing required key: {e}"],
+        }
     evidence_chain = analysis.get("evidence_chain", [])
     layer = analysis.get("layer", "application")
+
+    # Deterministic override: if infra_score is above the root-cause threshold,
+    # force layer=infrastructure regardless of LLM determination. The LLM may
+    # misclassify when log evidence is present (e.g. "SBI server stopped" appears
+    # as application evidence but is caused by the pod being absent — an infra event).
+    _cfg_override = get_config()
+    if state.get("infra_score", 0.0) >= _cfg_override.infra_root_cause_threshold:
+        if layer != "infrastructure":
+            logger.info(
+                "Overriding LLM layer=%s → infrastructure (infra_score=%.2f >= threshold=%.2f)",
+                layer,
+                state.get("infra_score", 0.0),
+                _cfg_override.infra_root_cause_threshold,
+            )
+        layer = "infrastructure"
 
     # Decision logic: determine if more evidence is needed
     cfg = get_config()

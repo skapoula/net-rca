@@ -1248,3 +1248,176 @@ class TestCompressNfLogsTruncation:
             result = compress_nf_logs(logs, ["AMF"], 10_000)
 
         assert result["AMF"][0]["message"] == "short"
+
+
+# ===========================================================================
+# NEW: Tests for BSF noise filtering (Task 5)
+# ===========================================================================
+
+
+class TestIsQualifyingWithNoiseFilter:
+    """Tests for _is_qualifying_with_noise_filter module-level function."""
+
+    def test_rejects_bsf_noise_even_at_error_level(self) -> None:
+        """_is_qualifying_with_noise_filter returns False for BSF noise at ERROR level."""
+        from triage_agent.agents.logs_agent import _is_qualifying_with_noise_filter
+
+        entry = {
+            "level": "ERROR",
+            "message": "BSF selection failed: no BSF instances found",
+            "matched_phase": None,
+            "matched_pattern": None,
+        }
+        assert not _is_qualifying_with_noise_filter(entry, ["*BSF selection failed*"])
+
+    def test_passes_real_error_through(self) -> None:
+        """Real AUTH failure errors are not suppressed."""
+        from triage_agent.agents.logs_agent import _is_qualifying_with_noise_filter
+
+        entry = {
+            "level": "ERROR",
+            "message": "Authentication failed for SUPI imsi-208930000000001",
+            "matched_phase": None,
+            "matched_pattern": None,
+        }
+        assert _is_qualifying_with_noise_filter(entry, ["*BSF selection failed*"])
+
+    def test_passes_dag_matched_entry_through(self) -> None:
+        """Entry matched against a DAG phase is always kept even if level is INFO."""
+        from triage_agent.agents.logs_agent import _is_qualifying_with_noise_filter
+
+        entry = {
+            "level": "INFO",
+            "message": "Registration reject: PLMN not allowed",
+            "matched_phase": "registration",
+            "matched_pattern": "*reject*",
+        }
+        assert _is_qualifying_with_noise_filter(entry, ["*BSF*"])
+
+    def test_rejects_noise_case_insensitively(self) -> None:
+        """Pattern matching is case-insensitive."""
+        from triage_agent.agents.logs_agent import _is_qualifying_with_noise_filter
+
+        entry = {
+            "level": "ERROR",
+            "message": "bsf selection failed",
+            "matched_phase": None,
+            "matched_pattern": None,
+        }
+        assert not _is_qualifying_with_noise_filter(entry, ["*BSF selection failed*"])
+
+    def test_no_noise_patterns_passes_all(self) -> None:
+        """Empty noise list means nothing is suppressed."""
+        from triage_agent.agents.logs_agent import _is_qualifying_with_noise_filter
+
+        entry = {
+            "level": "ERROR",
+            "message": "BSF selection failed: no BSF instances found",
+            "matched_phase": None,
+            "matched_pattern": None,
+        }
+        assert _is_qualifying_with_noise_filter(entry, [])
+
+
+class TestCompressNfLogsNoiseFilter:
+    """Tests for BSF noise filtering integration in compress_nf_logs."""
+
+    def test_dag_nf_bsf_noise_stripped(self) -> None:
+        """BSF noise entries are stripped from DAG NFs too."""
+        from unittest.mock import patch
+        from triage_agent.agents.logs_agent import compress_nf_logs
+        from triage_agent.config import TriageAgentConfig
+
+        logs = {
+            "smf": [
+                {
+                    "level": "ERROR",
+                    "message": "BSF selection failed: no BSF instances found",
+                    "matched_phase": None,
+                    "matched_pattern": None,
+                    "timestamp": "t1",
+                },
+                {
+                    "level": "ERROR",
+                    "message": "PDU session rejected: invalid APN",
+                    "matched_phase": "pdu_setup",
+                    "matched_pattern": None,
+                    "timestamp": "t2",
+                },
+            ]
+        }
+        with patch("triage_agent.agents.logs_agent.get_config") as mock_cfg:
+            mock_cfg.return_value = TriageAgentConfig(
+                rca_log_max_message_chars=500,
+                rca_token_budget_logs=10_000,
+                log_noise_patterns=["*BSF selection failed*"],
+            )
+            result = compress_nf_logs(logs, nf_union=["SMF"], token_budget=10_000)
+
+        smf_messages = [e["message"] for e in result.get("smf", [])]
+        assert all("BSF" not in m for m in smf_messages), "BSF noise must be stripped from DAG NF"
+        assert any("PDU session rejected" in m for m in smf_messages)
+
+    def test_non_dag_nf_bsf_noise_stripped(self) -> None:
+        """BSF noise entries are stripped from non-DAG NFs."""
+        from unittest.mock import patch
+        from triage_agent.agents.logs_agent import compress_nf_logs
+        from triage_agent.config import TriageAgentConfig
+
+        logs = {
+            "pcf": [
+                {
+                    "level": "ERROR",
+                    "message": "BSF query error: timeout",
+                    "matched_phase": None,
+                    "matched_pattern": None,
+                    "timestamp": "t1",
+                },
+                {
+                    "level": "ERROR",
+                    "message": "Policy update failed",
+                    "matched_phase": None,
+                    "matched_pattern": None,
+                    "timestamp": "t2",
+                },
+            ]
+        }
+        with patch("triage_agent.agents.logs_agent.get_config") as mock_cfg:
+            mock_cfg.return_value = TriageAgentConfig(
+                rca_log_max_message_chars=500,
+                rca_token_budget_logs=10_000,
+                log_noise_patterns=["*BSF query error*"],
+            )
+            result = compress_nf_logs(logs, nf_union=[], token_budget=10_000)
+
+        pcf_messages = [e["message"] for e in result.get("pcf", [])]
+        assert all("BSF" not in m for m in pcf_messages)
+        assert any("Policy update failed" in m for m in pcf_messages)
+
+    def test_empty_noise_patterns_preserves_all_errors(self) -> None:
+        """With empty log_noise_patterns, no entries are suppressed."""
+        from unittest.mock import patch
+        from triage_agent.agents.logs_agent import compress_nf_logs
+        from triage_agent.config import TriageAgentConfig
+
+        logs = {
+            "smf": [
+                {
+                    "level": "ERROR",
+                    "message": "BSF selection failed: no BSF instances found",
+                    "matched_phase": None,
+                    "matched_pattern": None,
+                    "timestamp": "t1",
+                },
+            ]
+        }
+        with patch("triage_agent.agents.logs_agent.get_config") as mock_cfg:
+            mock_cfg.return_value = TriageAgentConfig(
+                rca_log_max_message_chars=500,
+                rca_token_budget_logs=10_000,
+                log_noise_patterns=[],
+            )
+            result = compress_nf_logs(logs, nf_union=["SMF"], token_budget=10_000)
+
+        smf_messages = [e["message"] for e in result.get("smf", [])]
+        assert any("BSF" in m for m in smf_messages)

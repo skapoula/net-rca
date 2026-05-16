@@ -18,7 +18,7 @@ spec:
     - namespaceSelector:
         matchLabels:
           # kubernetes.io/metadata.name is auto-applied by k8s — no manual label needed
-          kubernetes.io/metadata.name: claudex
+          kubernetes.io/metadata.name: monitoring
     ports:
     - port: 8080
       protocol: TCP

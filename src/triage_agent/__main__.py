@@ -31,11 +31,12 @@ def main() -> None:
     )
     parser.add_argument(
         "--llm-provider",
-        choices=["openai", "anthropic", "local"],
+        choices=["openai", "anthropic", "local", "groq"],
         default=None,
         help=(
             "LLM provider to use. Overrides LLM_PROVIDER env var. "
-            "openai=ChatGPT, anthropic=Claude, local=vLLM/Ollama in-cluster pod."
+            "groq=Groq inference API (default), openai=ChatGPT, "
+            "anthropic=Claude, local=vLLM/Ollama in-cluster pod."
         ),
     )
     from triage_agent.config import get_config as _get_config  # noqa: PLC0415

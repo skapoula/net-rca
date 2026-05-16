@@ -1,0 +1,4 @@
+[PASS] 4.1: infra_score=0 < 0.3 (no false positive)
+[PASS] 4.1: LLM responded without timeout
+[FAIL] 4.2: layer=application expected infrastructure
+[FAIL] 4.3: root_nf=AMF not in [^(AUSF|UDM)$]

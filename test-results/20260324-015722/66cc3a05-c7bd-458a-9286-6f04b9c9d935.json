@@ -1,0 +1,58 @@
+{
+  "incident_id": "66cc3a05-c7bd-458a-9286-6f04b9c9d935",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "66cc3a05-c7bd-458a-9286-6f04b9c9d935",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Missing AmfUe object during registration",
+    "confidence": 1,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-24T01:57:39.644593289Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil for UE RU:1, AU:121",
+        "significance": "Direct log error indicating missing UE context in AMF"
+      },
+      {
+        "timestamp": "2026-03-24T01:57:40.402052845Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil for UE RU:2, AU:122",
+        "significance": "Recurring pattern confirms AMF failure in UE registration"
+      },
+      {
+        "timestamp": "2026-03-24T01:57:40.971700466Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000003",
+        "significance": "UDM/ARPF accessed prematurely, indicating AMF misrouting"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "AMF",
+      "Old AMF",
+      "UDM/ARPF",
+      "SMF",
+      "UDM",
+      "New AMF",
+      "UPF",
+      "(R)AN",
+      "UE",
+      "SEAF"
+    ]
+  }
+}

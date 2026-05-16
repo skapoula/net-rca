@@ -1,0 +1,74 @@
+{
+  "incident_id": "23d9760a-597c-4d82-987a-62690b63eac4",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "23d9760a-597c-4d82-987a-62690b63eac4",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "missing UDM/ARPF AV generation during registration",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T20:09:15.827130671Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Start T3560 timer",
+        "significance": "Indicates AMF initiated registration process but failed to invoke UDM/ARPF for AV generation as expected"
+      },
+      {
+        "timestamp": "2026-03-15T20:09:16.698605821Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Start T3560 timer",
+        "significance": "Recurrent deviation in multiple UEs confirms consistent failure to reach UDM/ARPF phase"
+      },
+      {
+        "timestamp": "2026-03-15T20:09:17.279824137Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Start T3560 timer",
+        "significance": "Pattern of deviation across multiple UEs indicates a systemic application logic flaw in AMF"
+      },
+      {
+        "timestamp": "null",
+        "source": "metrics",
+        "nf": "AMF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 22990848.0",
+        "significance": "No memory exhaustion observed, rules out infrastructure-level OOM"
+      },
+      {
+        "timestamp": "null",
+        "source": "traces",
+        "nf": "AMF",
+        "type": "trace_deviation",
+        "content": "expected: Generate AV, actual: Start T3560 timer",
+        "significance": "Direct mismatch in expected vs actual phase, confirms logic failure in AMF registration flow"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "AMF",
+      "SEAF",
+      "(R)AN",
+      "SMF",
+      "Old AMF",
+      "UPF",
+      "New AMF",
+      "UE",
+      "UDM",
+      "UDM/ARPF"
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "incident_id": "45c6372f-1dc8-4c6f-b26f-5d51b6247c48",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "45c6372f-1dc8-4c6f-b26f-5d51b6247c48",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Authentication Failure Cause: Mac Failure",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T20:55:38.440191063Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Recurrent authentication failure with explicit Mac Failure cause, indicating protocol-level failure in authentication phase"
+      },
+      {
+        "timestamp": "2026-03-15T20:55:38.937478942Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "Confirmed rejection of authentication request due to failure, consistent with AKA procedure failure"
+      },
+      {
+        "timestamp": "2026-03-15T20:53:27.224649981Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "SBI server (listen on 0.0.0.0:8000) stopped",
+        "significance": "Indicates service disruption in AMF, but not directly linked to authentication failure; likely secondary or concurrent issue"
+      },
+      {
+        "timestamp": "2026-03-15T20:54:38.885743182Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000001/authentication-data/authentication-subscription",
+        "significance": "Deviation from expected UDM/ARPF to UDR, suggesting misrouting or configuration issue, but not the direct cause of Mac Failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Authentication_5G_AKA",
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AMF",
+      "(R)AN",
+      "AUSF",
+      "New AMF",
+      "UDM",
+      "UDM/ARPF",
+      "Old AMF",
+      "SEAF",
+      "SMF",
+      "UPF",
+      "UE"
+    ]
+  }
+}

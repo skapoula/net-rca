@@ -20,14 +20,10 @@ from langsmith import traceable
 from triage_agent.config import get_config
 from triage_agent.mcp.client import MCPClient
 from triage_agent.state import TriageState
-from triage_agent.utils import count_tokens, parse_loki_response, parse_timestamp, save_artifact
+from triage_agent.utils import count_tokens, extract_nf_from_pod_name, parse_loki_response, parse_timestamp, save_artifact
 
 logger = logging.getLogger(__name__)
 
-
-def extract_nf_from_pod_name(pod: str) -> str:
-    """Extract NF name prefix from a k8s pod name. Returns lowercase."""
-    return pod.split("-")[0].lower()
 
 
 def wildcard_match(text: str, pattern: str) -> bool:
@@ -220,6 +216,32 @@ def build_loki_queries_from_dags(
     return build_loki_queries(combined, core_namespace)
 
 
+def _is_qualifying_with_noise_filter(
+    entry: dict[str, Any],
+    noise_patterns: list[str],
+) -> bool:
+    """Return True if entry qualifies as evidence (not noise).
+
+    An entry is disqualified if its message matches any noise pattern,
+    regardless of level. Otherwise, it qualifies if it has a matched
+    phase/pattern OR is ERROR/WARN/FATAL level.
+
+    Args:
+        entry: Log entry dict with 'message', 'level', 'matched_phase', 'matched_pattern'.
+        noise_patterns: Wildcard patterns (case-insensitive) to suppress.
+
+    Returns:
+        True if the entry should be included as evidence.
+    """
+    message = entry.get("message", "")
+    for pattern in noise_patterns:
+        if wildcard_match(message, pattern):
+            return False
+    if entry.get("matched_phase") or entry.get("matched_pattern"):
+        return True
+    return str(entry.get("level", "")).upper() in ("ERROR", "WARN", "FATAL")
+
+
 # --- Agent entry point ---
 
 
@@ -228,14 +250,14 @@ def compress_nf_logs(
     nf_union: list[str],
     token_budget: int,
 ) -> dict[str, Any]:
-    """Compress NF logs with DAG-NF protection.
+    """Compress NF logs with DAG-NF protection and noise filtering.
 
-    DAG-flow NFs (lowercase match against nf_union) — ALL entries kept,
-    messages are NEVER truncated.
+    DAG-flow NFs (lowercase match against nf_union) — qualifying entries kept,
+    noise-matching entries stripped, messages are NEVER truncated.
 
-    Non-DAG NFs — keep only entries that are qualifying (ERROR/WARN/FATAL level
-    or matched against a DAG phase/pattern). NFs with no qualifying entries
-    are omitted entirely.
+    Non-DAG NFs — keep only entries that qualify (ERROR/WARN/FATAL level
+    or matched against a DAG phase/pattern) AND do not match any noise pattern.
+    NFs with no qualifying entries are omitted entirely.
 
     Budget enforcement: non-DAG entries are evicted entry-by-entry (partial NF
     inclusion is allowed); DAG NF keys are never removed from the result even
@@ -248,6 +270,7 @@ def compress_nf_logs(
 
     cfg = get_config()
     max_chars = cfg.rca_log_max_message_chars
+    noise_patterns = cfg.log_noise_patterns
 
     def _truncate(entry: dict[str, Any]) -> dict[str, Any]:
         msg = entry.get("message", "")
@@ -257,12 +280,6 @@ def compress_nf_logs(
 
     nf_union_lower: set[str] = {nf.lower() for nf in nf_union}
 
-    def _is_qualifying(entry: dict[str, Any]) -> bool:
-        """Non-DAG entry qualifies when ERROR/WARN/FATAL or DAG-matched."""
-        if entry.get("matched_phase") or entry.get("matched_pattern"):
-            return True
-        return str(entry.get("level", "")).upper() in ("ERROR", "WARN", "FATAL")
-
     dag_nf_logs: dict[str, list[dict[str, Any]]] = {}
     non_dag_nf_logs: dict[str, list[dict[str, Any]]] = {}
 
@@ -270,22 +287,41 @@ def compress_nf_logs(
         if not isinstance(entries, list):
             continue
         if nf.lower() in nf_union_lower:
-            dag_nf_logs[nf] = [_truncate(e) for e in entries]
+            # DAG NFs: keep all non-noise entries (truncate messages)
+            dag_nf_logs[nf] = [
+                _truncate(e) for e in entries
+                if not any(wildcard_match(e.get("message", ""), p) for p in noise_patterns)
+            ]
         else:
-            qualifying = [_truncate(e) for e in entries if _is_qualifying(e)]
+            qualifying = [
+                _truncate(e) for e in entries
+                if _is_qualifying_with_noise_filter(e, noise_patterns)
+            ]
             if qualifying:
                 non_dag_nf_logs[nf] = qualifying
 
-    # DAG NFs always included (never truncated)
-    result: dict[str, Any] = dict(dag_nf_logs)
-
-    dag_tokens = count_tokens(str(result))
+    # DAG NFs are prioritised but must fit within budget.
+    # If DAG NFs together exceed the budget, trim entries per-NF (keep most recent).
+    result: dict[str, Any] = {}
+    dag_tokens = count_tokens(str(dag_nf_logs))
     if dag_tokens > token_budget:
         logger.warning(
-            "DAG NF logs exceed token budget (%d tokens), forwarding DAG NFs anyway",
+            "DAG NF logs exceed token budget (%d tokens), trimming to budget",
             dag_tokens,
         )
-        return result
+        # Distribute budget evenly across DAG NFs; keep tail (most recent) entries.
+        per_nf_budget = max(token_budget // max(len(dag_nf_logs), 1), 50)
+        for nf, entries in dag_nf_logs.items():
+            kept: list[dict[str, Any]] = []
+            for entry in reversed(entries):
+                trial = {**result, nf: [entry] + kept}
+                if count_tokens(str(trial)) <= per_nf_budget + count_tokens(str(result)):
+                    kept.insert(0, entry)
+                else:
+                    break
+            result[nf] = kept  # always include DAG NF key, even if empty after trimming
+    else:
+        result = dict(dag_nf_logs)
 
     # Add non-DAG NFs with entry-level eviction (partial inclusion allowed)
     for nf, entries in non_dag_nf_logs.items():

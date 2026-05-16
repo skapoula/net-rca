@@ -1,0 +1,7 @@
++-----------------------------+
+| t.name                      |
++-----------------------------+
+| "Registration_General"      |
+| "Authentication_5G_AKA"     |
+| "PDU_Session_Establishment" |
++-----------------------------+

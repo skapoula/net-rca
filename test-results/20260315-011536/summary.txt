@@ -1,0 +1,23 @@
+[PASS] All Free5GC pods Running
+[PASS] UERANSIM 11/11 containers ready
+[PASS] Prometheus: 8 scrape targets in 5g-core
+[PASS] Loki: 5 log streams from 5g-core
+[PASS] Local Memgraph reachable — 837 node(s) in graph
+[PASS] Phase 0 PASSED — cluster + local Memgraph are ready
+[PASS] DAG loaded: dags/registration_general.cypher
+[PASS] DAG loaded: dags/authentication_5g_aka.cypher
+[PASS] DAG loaded: dags/pdu_session_establishment.cypher
+[PASS] Memgraph: 3 ReferenceTrace node(s) loaded
+[PASS] TriageAgent healthy at http://localhost:8000
+[PASS] Phase 0.5 COMPLETE — TriageAgent running locally (PID 1775914)
+[PASS] uvicorn process alive (PID 1775914)
+[PASS] Port 8000 is responding
+[PASS] DAG loaded: Registration_General
+[PASS] DAG loaded: Authentication_5G_AKA
+[PASS] DAG loaded: PDU_Session_Establishment
+[PASS] /health: healthy, memgraph=true, prometheus=true, loki=true
+[PASS] /health: status=healthy (ready)
+[PASS] Phase 1 PASSED — TriageAgent healthy and ready
+[FAIL] Step 2.0: Not all IMSIs visible in Loki — check UERANSIM logs
+[FAIL] Incident c86df997-4ad1-4afa-b0a0-176d27ab34f2 did not complete within 360s
+[FAIL] Incident did not complete

@@ -4,9 +4,11 @@ Rule-based (no LLM). Queries Prometheus via MCP for pod-level health,
 computes an infrastructure score, and forwards findings to RCAAgent.
 """
 
+import asyncio
 import logging
 from typing import Any
 
+import httpx
 from langsmith import traceable
 
 from triage_agent.config import get_config
@@ -68,8 +70,232 @@ def build_infra_queries(core_namespace: str) -> list[str]:
         f'label_replace(sum by (namespace, pod, phase) '
         f'(kube_pod_status_phase{{namespace="{ns}", phase=~"Running|Pending|Unknown|Failed", '
         f'pod=~"{pr}"}}) > 0, '
-        f'"__name__", "pod_status", "", "")',
+        f'"report", "pod_status", "", "")',
     ]
+
+async def _fetch_prometheus_metrics(
+    affected_nfs: list[str],
+    start: int,
+    end: int,
+) -> dict[str, Any]:
+    """Fetch infra metrics from Prometheus via direct HTTP (no MCP).
+
+    Runs every PromQL query from build_infra_queries plus a replica-absence
+    query for the affected NFs. Results are collected into a dict keyed by
+    the 'report' label injected by label_replace().
+
+    Args:
+        affected_nfs: NF names from the triage state.
+        start: Unix epoch seconds for window start.
+        end: Unix epoch seconds for window end.
+
+    Returns:
+        Dict mapping report-label → list of {metric, value} dicts.
+        Returns {} on total failure (logged as WARNING).
+    """
+    cfg = get_config()
+    queries = list(build_infra_queries(cfg.core_namespace))
+
+    # Replica-absence query is run separately as a range query (see below).
+    # Build the raw PromQL but do NOT add it to the instant-query list.
+    replica_query: str | None = None
+    if affected_nfs:
+        nf_regex = "|".join(nf.lower() for nf in affected_nfs)
+        replica_query = (
+            f'kube_deployment_status_replicas_available{{deployment=~"{nf_regex}"}}'
+        )
+
+    collected: dict[str, list[dict[str, Any]]] = {}
+
+    async with httpx.AsyncClient(timeout=cfg.mcp_timeout) as client:
+        # ── Instant queries for all standard infra metrics ───────────────────
+        for query in queries:
+            for attempt in range(cfg.prometheus_max_retries):
+                try:
+                    resp = await client.get(
+                        f"{cfg.prometheus_url}/api/v1/query",
+                        params={"query": query, "time": end},
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+                    for series in data.get("data", {}).get("result", []):
+                        report_key = series["metric"].get("report", "unknown")
+                        collected.setdefault(report_key, []).append(series)
+                    break
+                except httpx.TimeoutException:
+                    logger.warning(
+                        "Prometheus query timed out (attempt %d): %s", attempt + 1, query
+                    )
+                except httpx.HTTPStatusError as exc:
+                    logger.warning("Prometheus HTTP error: %s — %s", query, exc)
+                    break
+                except Exception:
+                    logger.warning(
+                        "Prometheus query failed (attempt %d): %s",
+                        attempt + 1,
+                        query,
+                        exc_info=True,
+                    )
+                    break
+
+        # ── Range query for replica-absence detection ────────────────────────
+        # Use a range query over [start, end] so we detect 0-replica states that
+        # occurred during the incident window even if Prometheus hasn't yet scraped
+        # the current state (instant queries return stale data when queried before
+        # kube-state-metrics has scraped the scale-to-0 event).
+        if replica_query:
+            for attempt in range(cfg.prometheus_max_retries):
+                try:
+                    resp = await client.get(
+                        f"{cfg.prometheus_url}/api/v1/query_range",
+                        params={
+                            "query": replica_query,
+                            "start": start,
+                            "end": end,
+                            "step": "15s",
+                        },
+                    )
+                    resp.raise_for_status()
+                    data = resp.json()
+                    for series in data.get("data", {}).get("result", []):
+                        deployment = series["metric"].get("deployment", "")
+                        values = series.get("values", [])
+                        # If any sample in the window had 0 replicas, record as absent.
+                        if any(float(v[1]) == 0 for v in values):
+                            collected.setdefault("replicas_available", []).append(
+                                {
+                                    "metric": {**series["metric"], "report": "replicas_available"},
+                                    "value": [end, "0"],  # sentinel: deployment was absent
+                                }
+                            )
+                            logger.info(
+                                "Replica-absence detected via range query: deployment=%s had 0 replicas in window",
+                                deployment,
+                            )
+                        else:
+                            # Deployment is healthy — record current (last) value
+                            if values:
+                                collected.setdefault("replicas_available", []).append(
+                                    {
+                                        "metric": {**series["metric"], "report": "replicas_available"},
+                                        "value": values[-1],
+                                    }
+                                )
+                    break
+                except httpx.TimeoutException:
+                    logger.warning(
+                        "Prometheus replica range query timed out (attempt %d)", attempt + 1
+                    )
+                except httpx.HTTPStatusError as exc:
+                    logger.warning("Prometheus replica range query HTTP error: %s", exc)
+                    break
+                except Exception:
+                    logger.warning(
+                        "Prometheus replica range query failed (attempt %d)",
+                        attempt + 1,
+                        exc_info=True,
+                    )
+                    break
+
+    return collected
+
+
+def extract_replica_status(metrics: dict[str, Any]) -> set[str]:
+    """Return set of deployment names with 0 available replicas.
+
+    Args:
+        metrics: Dict returned by _fetch_prometheus_metrics(), keyed by report label.
+
+    Returns:
+        Set of lowercase deployment names that have 0 available replicas.
+    """
+    absent: set[str] = set()
+    for series in metrics.get("replicas_available", []):
+        deployment = series["metric"].get("deployment", "")
+        try:
+            if float(series["value"][1]) == 0:
+                absent.add(deployment.lower())
+        except (IndexError, ValueError, TypeError):
+            pass
+    return absent
+
+
+def _safe_float(value_field: Any) -> float:
+    """Extract float from a Prometheus value field, which may be [timestamp, value_str] or a plain number."""
+    try:
+        if isinstance(value_field, list):
+            return float(value_field[1])
+        return float(value_field)
+    except (IndexError, ValueError, TypeError):
+        return 0.0
+
+
+def _normalize_prometheus_metrics(raw: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
+    """Convert raw Prometheus series format to the internal format expected by extract_* functions.
+
+    Prometheus returns each series as {"metric": {label: value, ...}, "value": [timestamp, value_str]}.
+    The internal format used by compute_infrastructure_score and extract_* helpers is simpler:
+    {"pod": str, "value": float, ...}.
+
+    Args:
+        raw: Dict keyed by report label, values are lists of raw Prometheus series dicts.
+
+    Returns:
+        Normalized dict with keys: pod_restarts, oom_kills, cpu_usage, memory_percent,
+        pod_status, replicas_available.
+    """
+    normalized: dict[str, Any] = {}
+
+    normalized["pod_restarts"] = [
+        {
+            "pod": s["metric"].get("pod", "unknown"),
+            "container": s["metric"].get("container", ""),
+            "value": _safe_float(s.get("value", [0, "0"])),
+        }
+        for s in raw.get("pod_restarts", [])
+    ]
+
+    normalized["oom_kills"] = [
+        {
+            "pod": s["metric"].get("pod", "unknown"),
+            "container": s["metric"].get("container", ""),
+            "value": _safe_float(s.get("value", [0, "0"])),
+        }
+        for s in raw.get("oom_kills_5m", [])
+        if _safe_float(s.get("value", [0, "0"])) > 0
+    ]
+
+    normalized["cpu_usage"] = [
+        {
+            "pod": s["metric"].get("pod", "unknown"),
+            "container": s["metric"].get("container", ""),
+            "value": _safe_float(s.get("value", [0, "0"])),
+        }
+        for s in raw.get("cpu_usage_rate_2m", [])
+    ]
+
+    normalized["memory_percent"] = [
+        {
+            "pod": s["metric"].get("pod", "unknown"),
+            "container": s["metric"].get("container", ""),
+            "value": _safe_float(s.get("value", [0, "0"])),
+        }
+        for s in raw.get("memory_usage_percent", [])
+    ]
+
+    normalized["pod_status"] = [
+        {
+            "pod": s["metric"].get("pod", "unknown"),
+            "phase": s["metric"].get("phase", "Unknown"),
+        }
+        for s in raw.get("pod_status", [])
+    ]
+
+    # replicas_available kept in Prometheus format — extract_replica_status reads it directly
+    normalized["replicas_available"] = raw.get("replicas_available", [])
+
+    return normalized
+
 
 # --- Infrastructure score: 4-factor weighted model ---
 #
@@ -81,8 +307,16 @@ def build_infra_queries(core_namespace: str) -> list[str]:
 # | Resource Saturation          | 0.20   | Mem>90%: 1.0, CPU>1.0core: 0.8, Normal: 0.0         |
 
 
-def compute_infrastructure_score(metrics: dict[str, Any]) -> float:
-    """Compute weighted infra score from pod metrics. Returns 0.0-1.0."""
+def compute_infrastructure_score(
+    metrics: dict[str, Any],
+    affected_nfs: list[str] | None = None,
+) -> float:
+    """Compute weighted infra score from pod metrics. Returns 0.0-1.0.
+
+    Args:
+        metrics: Metrics dict keyed by report label (from _fetch_prometheus_metrics).
+        affected_nfs: Optional list of NF names to check for replica-absence.
+    """
     cfg = get_config()
     score = 0.0
 
@@ -106,6 +340,17 @@ def compute_infrastructure_score(metrics: dict[str, Any]) -> float:
     score += cfg.infra_weight_oom * (1.0 if oom_kills else 0.0)
 
     # Factor 3: Pod Status
+    # Priority: absent deployments (0 replicas) > failed/unknown pods > pending
+    dag_nfs_lower = {nf.lower() for nf in (affected_nfs or [])}
+    absent_dag_nfs = extract_replica_status(metrics) & dag_nfs_lower if dag_nfs_lower else set()
+
+    if absent_dag_nfs:
+        # A DAG-flow NF has 0 available replicas — definitively an infrastructure
+        # event (deployment scaled to zero or crashlooping). Individual pod factors
+        # are all zero because there are no pod objects, so we short-circuit to 1.0
+        # instead of letting the weighted sum produce a misleadingly low score.
+        return 1.0
+
     pod_status = metrics.get("pod_status", [])
     status_factor = 0.0
     for entry in pod_status:
@@ -349,18 +594,25 @@ def infra_agent(state: TriageState) -> dict[str, Any]:
         incident_id = state["incident_id"]
 
         alert_time = parse_timestamp(alert["startsAt"])
-        time_window = (
-            alert_time - cfg.alert_lookback_seconds,
-            alert_time + cfg.alert_lookahead_seconds,
-        )
+        start = int(alert_time - cfg.alert_lookback_seconds)
+        end = int(alert_time + cfg.alert_lookahead_seconds)
 
         affected_nfs = extract_nfs_from_alert(alert)
 
-        # MCP query to Prometheus
-        # metrics = mcp_client.query_prometheus(queries=build_infra_queries(cfg.core_namespace), time_range=time_window)
-        metrics: dict[str, Any] = {}  # TODO: wire up MCP client
+        # Fetch Prometheus metrics via direct HTTP and normalize to internal format
+        try:
+            metrics_raw = asyncio.run(
+                _fetch_prometheus_metrics(affected_nfs, start, end)
+            )
+            metrics = _normalize_prometheus_metrics(metrics_raw)
+        except Exception:
+            logger.warning(
+                "Prometheus fetch failed, proceeding with empty metrics",
+                exc_info=True,
+            )
+            metrics = {}
 
-        infra_score = compute_infrastructure_score(metrics)
+        infra_score = compute_infrastructure_score(metrics, affected_nfs)
 
         raw_findings: dict[str, Any] = {
             "pod_restarts": extract_restart_counts(metrics),
@@ -385,7 +637,6 @@ def infra_agent(state: TriageState) -> dict[str, Any]:
 
         # Return only the keys this agent writes — avoids LangGraph parallel-merge conflict
         # with metrics_agent (both start from START in the same step).
-        _ = affected_nfs, time_window  # computed but used only for MCP queries (wired later)
         return {
             "infra_checked": True,
             "infra_score": infra_score,

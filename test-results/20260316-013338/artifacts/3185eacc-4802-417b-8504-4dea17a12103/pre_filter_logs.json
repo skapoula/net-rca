@@ -1,0 +1,18 @@
+{
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-16T01:42:12.497820660Z\u001b[33m [WARN][AMF][SBI] \u001b[0mSBI server (listen on 0.0.0.0:8000) stopped",
+      "timestamp": 1773625332,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T01:42:12.497870611Z\u001b[33m [WARN][AMF][Init] \u001b[0mMetrics server (listen on 0.0.0.0:9091) stopped",
+      "timestamp": 1773625332,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

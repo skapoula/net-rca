@@ -15,7 +15,7 @@ spec:
           - configMapRef:
               name: triage-agent-config
           - secretRef:
-              name: llm-credentials    # provides LLM_API_KEY + LANGSMITH_API_KEY
+              name: llm-credentials    # provides GROQ_API_KEY, LLM_API_KEY, LANGSMITH_API_KEY
         resources:
           requests:
             cpu: 1

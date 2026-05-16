@@ -1,0 +1,230 @@
+{
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:23.232853778Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:1,AU:61(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303763,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:24.151575876Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:2,AU:62(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303764,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:24.214132487Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:3,AU:63(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303764,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:24.886779371Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:4,AU:64(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303764,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:25.364185408Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:5,AU:65(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303765,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:25.793657980Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:6,AU:66(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303765,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:26.265969438Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:7,AU:67(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:26.368751192Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:8,AU:68(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:27.127116569Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:9,AU:69(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303767,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:27.510333264Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:10,AU:70(3GPP)][ran_addr:10.42.0.131:49646] \u001b[0mAmfUe is nil",
+      "timestamp": 1774303767,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ],
+  "smf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:23.841400856Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303763,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:23.841418340Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303763,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:24.405177306Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303764,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:24.405196170Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303764,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:24.707661252Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303764,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:24.707678699Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303764,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:25.143120998Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303765,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:25.143139826Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303765,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:25.581357974Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303765,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:25.581379441Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303765,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:26.068247370Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:26.068263845Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:26.600394196Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:26.600411767Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:26.919795039Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:26.919814363Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303766,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:27.336382451Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303767,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:27.336401070Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303767,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:28.616718764Z\u001b[33m [WARN][SMF][PduSess] \u001b[0mURR 1 is not in ChargingInfo map!",
+      "timestamp": 1774303768,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:28.616727302Z\u001b[33m [WARN][SMF][PduSess] \u001b[0mURR 2 is not in ChargingInfo map!",
+      "timestamp": 1774303768,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-23T22:09:28.707081455Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF selection failed: no BSF instances found",
+      "timestamp": 1774303768,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "ERROR",
+      "message": "2026-03-23T22:09:28.707099540Z\u001b[33m [WARN][SMF][Consumer] \u001b[0mBSF query error (falling back to NRF): no BSF instances found",
+      "timestamp": 1774303768,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

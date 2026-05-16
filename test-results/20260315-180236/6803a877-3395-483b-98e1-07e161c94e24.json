@@ -1,0 +1,58 @@
+{
+  "incident_id": "6803a877-3395-483b-98e1-07e161c94e24",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "6803a877-3395-483b-98e1-07e161c94e24",
+    "layer": "application",
+    "root_nf": "AUSF",
+    "failure_mode": "authentication timeout due to protocol failure",
+    "confidence": 0.92,
+    "evidence_chain": [
+      {
+        "timestamp": "alert_time-5min",
+        "source": "metrics",
+        "nf": "AUSF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 28053504.0",
+        "significance": "AUSF memory usage is within normal range, but no direct OOM indication; suggests possible performance degradation or latency"
+      },
+      {
+        "timestamp": "alert_time",
+        "source": "metrics",
+        "nf": "SMF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 45842432.0",
+        "significance": "SMF memory is elevated, indicating potential downstream pressure from registration failure"
+      },
+      {
+        "timestamp": "alert_time",
+        "source": "traces",
+        "nf": "Registration_General",
+        "type": "trace_deviation",
+        "content": "[]",
+        "significance": "No deviation in expected DAG phases, suggesting no structural or protocol-level phase failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.85,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SMF",
+      "(R)AN",
+      "AUSF",
+      "UDM",
+      "New AMF",
+      "UE",
+      "SEAF",
+      "AMF",
+      "UPF",
+      "UDM/ARPF",
+      "Old AMF"
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+  "incident_id": "11a1f213-28f9-4abd-b665-6197fb6e45e8",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "11a1f213-28f9-4abd-b665-6197fb6e45e8",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Authentication Failure Cause: Mac Failure",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "1773607165",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Recurrent authentication failure with Mac Failure cause indicates protocol-level issue in AMF during registration phase"
+      },
+      {
+        "timestamp": "1773607165",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "Confirmed rejection of authentication request due to failure, aligning with registration phase failure"
+      },
+      {
+        "timestamp": "1773607181",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "RAN context has been removed[addr: <nil>]",
+        "significance": "Indicates downstream RAN context removal after failed authentication, consistent with registration failure"
+      },
+      {
+        "timestamp": "1773607165",
+        "source": "metrics",
+        "nf": "AMF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 23531520.0",
+        "significance": "AMF memory usage is within normal range, no evidence of OOM or pod crash"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AMF",
+      "(R)AN",
+      "AUSF",
+      "New AMF",
+      "UDM",
+      "UDM/ARPF",
+      "Old AMF",
+      "SEAF",
+      "SMF",
+      "UPF",
+      "UE"
+    ]
+  }
+}

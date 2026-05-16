@@ -1,0 +1,66 @@
+{
+  "incident_id": "05669713-3ad0-41b5-8829-958eaa07e556",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "05669713-3ad0-41b5-8829-958eaa07e556",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil (missing UE context in AMF)",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T02:09:17.434692188Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Repeated occurrence indicates AMF failed to establish or maintain UE context, which is a critical prerequisite for PDU Session Establishment"
+      },
+      {
+        "timestamp": "2026-03-16T02:07:35.156814593Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Transport 5GSM Message to SMF (expected: Registration Request from UE)",
+        "significance": "UE registration message is being transported by AMF instead of UE, indicating a missing or misrouted UE-initiated registration"
+      },
+      {
+        "timestamp": "2026-03-16T02:07:35.895767990Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Transport 5GSM Message to SMF (expected: Registration Request from UE)",
+        "significance": "Same pattern across multiple UEs confirms AMF is acting as intermediary without valid UE context"
+      },
+      {
+        "timestamp": "2026-03-16T02:09:17.954119660Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Temporal precedence shows the failure occurs shortly after registration attempts, aligning with AMF context loss"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "PDU_Session_Establishment"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

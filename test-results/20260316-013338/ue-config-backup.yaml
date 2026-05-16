@@ -1,0 +1,65 @@
+apiVersion: v1
+data:
+  ue-base.yaml: |
+    supi: 'imsi-208930000000001'
+    mcc: '208'
+    mnc: '93'
+    key: '8baf473f2f8fd09487cccbd7097c6862'
+    op: '8e27b6af0e692e750f32667a3b14605d'
+    opType: 'OPC'
+    amf: '8000'
+    imei: '356938035643803'
+    imeiSv: '4370816125816151'
+
+    gnbSearchList:
+      - 127.0.0.1
+
+    uacAic:
+      mps: false
+      mcs: false
+
+    uacAcc:
+      normalClass: 0
+      class11: false
+      class12: false
+      class13: false
+      class14: false
+      class15: false
+
+    sessions:
+      - type: 'IPv4'
+        apn: 'invalid-internet'
+        slice:
+          sst: 1
+          sd: 0x010203
+
+    configured-nssai:
+      - sst: 1
+        sd: 0x010203
+      - sst: 1
+        sd: 0x112233
+
+    default-nssai:
+      - sst: 1
+        sd: 0x010203
+
+    integrity:
+      IA1: true
+      IA2: true
+      IA3: true
+
+    ciphering:
+      EA1: true
+      EA2: true
+      EA3: true
+
+    integrityMaxRate:
+      uplink: 'full'
+      downlink: 'full'
+kind: ConfigMap
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"ue-base.yaml":"supi: 'imsi-208930000000001'\nmcc: '208'\nmnc: '93'\nkey: '8baf473f2f8fd09487cccbd7097c6862'\nop: '8e27b6af0e692e750f32667a3b14605d'\nopType: 'OPC'\namf: '8000'\nimei: '356938035643803'\nimeiSv: '4370816125816151'\n\ngnbSearchList:\n  - 127.0.0.1\n\nuacAic:\n  mps: false\n  mcs: false\n\nuacAcc:\n  normalClass: 0\n  class11: false\n  class12: false\n  class13: false\n  class14: false\n  class15: false\n\nsessions:\n  - type: 'IPv4'\n    apn: 'invalid-internet'\n    slice:\n      sst: 1\n      sd: 0x010203\n\nconfigured-nssai:\n  - sst: 1\n    sd: 0x010203\n  - sst: 1\n    sd: 0x112233\n\ndefault-nssai:\n  - sst: 1\n    sd: 0x010203\n\nintegrity:\n  IA1: true\n  IA2: true\n  IA3: true\n\nciphering:\n  EA1: true\n  EA2: true\n  EA3: true\n\nintegrityMaxRate:\n  uplink: 'full'\n  downlink: 'full'\n"},"kind":"ConfigMap","metadata":{"annotations":{},"creationTimestamp":"2026-01-17T22:48:32Z","name":"ue-config","namespace":"5g-core","resourceVersion":"39297186","uid":"d6f21746-50b7-419a-bdf3-9b2b0fd69190"}}
+  name: ue-config
+  namespace: 5g-core

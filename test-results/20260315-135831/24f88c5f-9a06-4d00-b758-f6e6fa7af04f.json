@@ -1,0 +1,58 @@
+{
+  "incident_id": "24f88c5f-9a06-4d00-b758-f6e6fa7af04f",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "24f88c5f-9a06-4d00-b758-f6e6fa7af04f",
+    "layer": "application",
+    "root_nf": "AUSF",
+    "failure_mode": "authentication timeout due to missing or invalid user data",
+    "confidence": 0.92,
+    "evidence_chain": [
+      {
+        "timestamp": "alert_time-5min",
+        "source": "metrics",
+        "nf": "AUSF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 28545024.0",
+        "significance": "AUSF memory usage is within normal range, indicating no OOM or memory exhaustion"
+      },
+      {
+        "timestamp": "alert_time",
+        "source": "metrics",
+        "nf": "SMF",
+        "type": "metric",
+        "content": "container_memory_working_set_bytes: 46276608.0",
+        "significance": "SMF memory is elevated, suggesting downstream dependency on AUSF response during registration"
+      },
+      {
+        "timestamp": "alert_time",
+        "source": "traces",
+        "nf": "Registration_General",
+        "type": "trace_deviation",
+        "content": [],
+        "significance": "No deviations in UE trace, indicating no protocol-level or path deviation"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.85,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UE",
+      "UDM/ARPF",
+      "(R)AN",
+      "UDM",
+      "UPF",
+      "SMF",
+      "AUSF",
+      "Old AMF",
+      "SEAF",
+      "New AMF",
+      "AMF"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "incident_id": "89016cd1-e2a0-485f-9ccd-7d2b94671368",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "89016cd1-e2a0-485f-9ccd-7d2b94671368",
+    "layer": "unknown",
+    "root_nf": "unknown",
+    "failure_mode": "llm_error",
+    "confidence": 0,
+    "evidence_chain": [],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Authentication_5G_AKA",
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "(R)AN",
+      "AMF",
+      "UE",
+      "Old AMF",
+      "SMF",
+      "SEAF",
+      "AUSF",
+      "UDM/ARPF",
+      "New AMF",
+      "UPF",
+      "UDM"
+    ]
+  }
+}

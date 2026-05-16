@@ -1,0 +1,104 @@
+{
+  "upf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:16:59.855706896Z\u001b[33m [WARN][UPF][PFCP][LAddr:0.0.0.0:8805] \u001b[0mtrToCh: txtr[10.43.235.41:8805-8148357] not found",
+      "timestamp": 1773670619,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:16:59.923976390Z\u001b[33m [WARN][UPF][PFCP][LAddr:0.0.0.0:8805] \u001b[0mtrToCh: txtr[10.43.235.41:8805-8148358] not found",
+      "timestamp": 1773670619,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ],
+  "amf": [
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:52.044846793Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:1,AU:31(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670672,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:52.661311568Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:2,AU:32(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670672,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:53.166994493Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:3,AU:33(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670673,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:53.606943194Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:4,AU:34(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670673,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:53.882120883Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:10,AU:40(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670673,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:54.444756185Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:5,AU:35(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670674,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:55.017822970Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:6,AU:36(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670675,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:55.256562512Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:7,AU:37(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670675,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:55.591971205Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:8,AU:38(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670675,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:17:55.710440762Z\u001b[33m [WARN][AMF][Ngap][amf_ue_ngap_id:RU:9,AU:39(3GPP)][ran_addr:10.42.0.96:42003] \u001b[0mAmfUe is nil",
+      "timestamp": 1773670675,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:18:10.763456649Z\u001b[33m [WARN][AMF][Ngap] \u001b[0mRAN context has been removed[addr: <nil>]",
+      "timestamp": 1773670690,
+      "matched_phase": null,
+      "matched_pattern": null
+    },
+    {
+      "level": "WARN",
+      "message": "2026-03-16T14:18:10.763504065Z\u001b[33m [WARN][AMF][Ngap] \u001b[0mRAN context has been removed[addr: <nil>]",
+      "timestamp": 1773670690,
+      "matched_phase": null,
+      "matched_pattern": null
+    }
+  ]
+}

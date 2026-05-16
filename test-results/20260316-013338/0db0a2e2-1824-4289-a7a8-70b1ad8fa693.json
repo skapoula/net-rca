@@ -1,0 +1,67 @@
+{
+  "incident_id": "0db0a2e2-1824-4289-a7a8-70b1ad8fa693",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "0db0a2e2-1824-4289-a7a8-70b1ad8fa693",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Authentication Failure Cause: Mac Failure",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T01:49:36.535986252Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Primary symptom indicating authentication failure at AMF level"
+      },
+      {
+        "timestamp": "2026-03-16T01:49:36.536142403Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "Confirmed rejection of authentication request due to failure"
+      },
+      {
+        "timestamp": "2026-03-16T01:49:00.652402917Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Deviation: UDM/ARPF expected to generate AV, but AMF initiated timer prematurely, indicating misrouting or logic error"
+      },
+      {
+        "timestamp": "2026-03-16T01:49:00.699526139Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Recurrent deviation confirms AMF is incorrectly handling registration flow"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Authentication_5G_AKA",
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

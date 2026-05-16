@@ -1,0 +1,66 @@
+{
+  "incident_id": "dab744a9-4431-46d3-8455-f9b562308907",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "dab744a9-4431-46d3-8455-f9b562308907",
+    "layer": "application",
+    "root_nf": "SMF",
+    "failure_mode": "BSF selection failure due to missing BSF instances",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T02:19:51.172401591Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF selection failed: no BSF instances found",
+        "significance": "Primary symptom indicating SMF cannot locate BSF, blocking registration flow"
+      },
+      {
+        "timestamp": "2026-03-15T02:19:51.172418156Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF query error (falling back to NRF): no BSF instances found",
+        "significance": "Confirms SMF attempted query and failed, triggering fallback to NRF, indicating missing BSF service"
+      },
+      {
+        "timestamp": "2026-03-15T02:19:47.476629212Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Deviation shows registration started at AMF instead of UDM/ARPF, indicating early phase failure in AV generation"
+      },
+      {
+        "timestamp": "2026-03-15T02:19:49.600991404Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Indicates AMF failed to establish UE context, likely due to upstream or registration failure"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "SEAF",
+      "AMF",
+      "(R)AN",
+      "SMF",
+      "UDM",
+      "Old AMF",
+      "New AMF",
+      "UPF",
+      "UE",
+      "UDM/ARPF"
+    ]
+  }
+}

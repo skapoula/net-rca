@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: memgraph-pvc
-  namespace: 5g-monitoring
+  namespace: monitoring
   labels:
     app: triage-agent
     component: memgraph

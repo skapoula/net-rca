@@ -1,0 +1,67 @@
+{
+  "incident_id": "ab10460f-c602-4e8b-90e4-80e06cb989aa",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "ab10460f-c602-4e8b-90e4-80e06cb989aa",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "Authentication Failure Cause: Mac Failure",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T22:57:21.968315703Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Direct indication of authentication failure at AMF level, matching expected failure mode in AKA procedure"
+      },
+      {
+        "timestamp": "2026-03-15T22:56:43.209776127Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Deviation shows AMF initiating timer instead of UDM/ARPF, indicating early phase misrouting and potential protocol violation"
+      },
+      {
+        "timestamp": "2026-03-15T22:56:45.756604801Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000002/authentication-data/authentication-subscription",
+        "significance": "UDM/ARPF data retrieval occurred, but AMF initiated early actions, suggesting misalignment in procedure flow"
+      },
+      {
+        "timestamp": "2026-03-15T22:57:21.580616588Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "Rejection of authentication request with no upstream validation, indicating failure in AMF's role in AKA phase"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Authentication_5G_AKA",
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "incident_id": "abf61bf1-e82a-4b42-91d2-286d55f9c92e",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "abf61bf1-e82a-4b42-91d2-286d55f9c92e",
+    "layer": "application",
+    "root_nf": "SMF",
+    "failure_mode": "BSF selection failure leading to fallback to NRF and authentication rejection",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T03:57:12.875860325Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF selection failed: no BSF instances found",
+        "significance": "First observed BSF failure, indicates upstream dependency failure in authentication flow"
+      },
+      {
+        "timestamp": "2026-03-15T03:57:12.875876194Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF query error (falling back to NRF): no BSF instances found",
+        "significance": "Confirms SMF cannot locate BSF, triggering fallback mechanism, indicating missing or unreachable BSF instance"
+      },
+      {
+        "timestamp": "2026-03-15T03:57:43.586353243Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Reject authentication",
+        "significance": "AMF rejects authentication due to upstream failure in SMF, confirming propagation of failure"
+      },
+      {
+        "timestamp": "2026-03-15T03:57:43.988571871Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "Authentication Failure Cause: Mac Failure",
+        "significance": "Indicates authentication failure at AMF level, which is a downstream consequence of SMF's inability to locate BSF"
+      },
+      {
+        "timestamp": "2026-03-15T03:57:05.973851598Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "GET /nudr-dr/v2/subscription-data/imsi-208930000000001/authentication-data/authentication-subscription",
+        "significance": "Deviation from expected UDM/ARPF flow; UDR handling subscription data suggests misrouting or missing upstream validation"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Authentication_5G_AKA",
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UDM",
+      "UDM/ARPF",
+      "New AMF",
+      "SMF",
+      "(R)AN",
+      "AMF",
+      "Old AMF",
+      "SEAF",
+      "UE",
+      "UPF",
+      "AUSF"
+    ]
+  }
+}

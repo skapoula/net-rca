@@ -1,0 +1,4 @@
+8e382039-688d-462e-bd10-2bd1145349e1|pre_filter_metrics.json|7721
+8e382039-688d-462e-bd10-2bd1145349e1|post_filter_metrics.json|87
+8e382039-688d-462e-bd10-2bd1145349e1|pre_filter_logs.json|0
+8e382039-688d-462e-bd10-2bd1145349e1|post_filter_logs.json|0

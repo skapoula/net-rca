@@ -1,0 +1,17 @@
+{
+  "SMF": {
+    "container_memory_working_set_bytes": 44986368.0
+  },
+  "UPF": {
+    "container_memory_working_set_bytes": 24113152.0
+  },
+  "AUSF": {
+    "container_memory_working_set_bytes": 31186944.0
+  },
+  "AMF": {
+    "container_memory_working_set_bytes": 26644480.0
+  },
+  "UDM": {
+    "container_memory_working_set_bytes": 26443776.0
+  }
+}

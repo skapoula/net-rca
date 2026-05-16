@@ -440,20 +440,41 @@ class TestRcaAgentTimeoutRecovery:
 class TestLLMErrorPropagation:
     """LLM errors propagate — no silent fallback."""
 
-    def test_llm_connection_error_propagates(
+    def test_llm_missing_required_key_returns_degraded_result(
+        self, sample_initial_state: TriageState
+    ) -> None:
+        """Valid JSON response missing root_nf must degrade gracefully, not raise KeyError."""
+        sample_initial_state["compressed_evidence"] = _MINIMAL_COMPRESSED_EVIDENCE
+        with patch(
+            "triage_agent.agents.rca_agent.llm_analyze_evidence",
+            return_value={"failure_mode": "some_error", "confidence": 0.5},
+        ):
+            result = rca_agent_first_attempt(sample_initial_state)
+
+        assert result["failure_mode"] == "llm_error"
+        assert result["root_nf"] == "unknown"
+        assert result["confidence"] == 0.0
+        assert result["needs_more_evidence"] is True
+
+    def test_llm_connection_error_returns_degraded_result(
         self, sample_initial_state: TriageState, sample_dag: dict[str, Any]
     ) -> None:
-        """ConnectionError from LLM should propagate out of rca_agent_first_attempt."""
-        import pytest
-
+        """ConnectionError from LLM returns degraded sentinel result (retry on first attempt)."""
         state = sample_initial_state
         state["dag"] = sample_dag
 
         with patch(
             "triage_agent.agents.rca_agent.llm_analyze_evidence",
             side_effect=ConnectionError("Cannot connect to LLM"),
-        ), pytest.raises(ConnectionError):
-            rca_agent_first_attempt(state)
+        ):
+            result = rca_agent_first_attempt(state)
+
+        # Connection errors are caught and handled gracefully; retry is triggered
+        assert result["failure_mode"] == "llm_error"
+        assert result["root_nf"] == "unknown"
+        assert result["confidence"] == 0.0
+        # On first attempt, should request retry
+        assert result["needs_more_evidence"] is True
 
 
 class TestEvidenceChainCitations:

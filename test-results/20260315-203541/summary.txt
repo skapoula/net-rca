@@ -1,0 +1,11 @@
+[PASS] 4.1: infra_score=0 < 0.3 (no false positive)
+[PASS] 4.1: LLM responded without timeout
+[FAIL] 4.2: root_nf=unknown not in [^AMF$]
+[FAIL] 4.2: layer=unknown expected infrastructure
+[FAIL] 4.2: confidence=0 < 0.70
+[FAIL] 4.3: root_nf=unknown not in [^(AUSF|UDM|AMF)$]
+[FAIL] 4.3: layer=unknown expected application
+[FAIL] 4.3: confidence=0 < 0.70
+[FAIL] 4.4: root_nf=unknown not in [^SMF$]
+[FAIL] 4.4: layer=unknown expected application
+[FAIL] 4.4: confidence=0 < 0.70

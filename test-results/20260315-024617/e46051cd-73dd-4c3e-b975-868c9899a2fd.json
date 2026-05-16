@@ -1,0 +1,66 @@
+{
+  "incident_id": "e46051cd-73dd-4c3e-b975-868c9899a2fd",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "e46051cd-73dd-4c3e-b975-868c9899a2fd",
+    "layer": "application",
+    "root_nf": "SMF",
+    "failure_mode": "BSF selection failure due to missing instances",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T02:46:51.111734946Z",
+        "source": "logs",
+        "nf": "SMF",
+        "type": "log",
+        "content": "BSF selection failed: no BSF instances found",
+        "significance": "First occurrence of BSF selection failure, indicating SMF cannot locate a BSF instance to proceed with registration"
+      },
+      {
+        "timestamp": "2026-03-15T02:46:51.111752683Z",
+        "source": "logs",
+        "nf": "SMF",
+        "type": "log",
+        "content": "BSF query error (falling back to NRF): no BSF instances found",
+        "significance": "SMF falls back to NRF, but still fails to find BSF instances, confirming absence of BSF service"
+      },
+      {
+        "timestamp": "2026-03-15T02:46:47.377737625Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "AMF starts T3560 timer prematurely, indicating deviation from expected UDM/ARPF interaction; suggests registration flow is not progressing correctly"
+      },
+      {
+        "timestamp": "2026-03-15T02:46:48.183672412Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "AMF reports missing UE context, indicating failure in UE registration state management"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "UDM",
+      "UE",
+      "New AMF",
+      "UDM/ARPF",
+      "Old AMF",
+      "UPF",
+      "(R)AN",
+      "AMF",
+      "SEAF",
+      "SMF",
+      "AUSF"
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "pod_restarts": {},
+  "oom_kills": {},
+  "resource_usage": {},
+  "node_health": {},
+  "concurrent_failures": 0,
+  "critical_events": []
+}

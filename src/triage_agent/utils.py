@@ -43,6 +43,11 @@ def parse_loki_response(data: dict[str, Any]) -> list[dict[str, Any]]:
     return logs
 
 
+def extract_nf_from_pod_name(pod: str) -> str:
+    """Extract NF name prefix from a k8s pod name. Returns lowercase."""
+    return pod.split("-")[0].lower()
+
+
 def count_tokens(text: str) -> int:
     """Approximate token count using 4-chars-per-token heuristic."""
     return max(1, len(text) // 4)

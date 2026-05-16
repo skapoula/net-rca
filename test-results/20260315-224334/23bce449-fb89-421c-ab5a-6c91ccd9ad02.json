@@ -1,0 +1,58 @@
+{
+  "incident_id": "23bce449-fb89-421c-ab5a-6c91ccd9ad02",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "23bce449-fb89-421c-ab5a-6c91ccd9ad02",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "RAN context removal due to invalid or missing RAN address",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T22:42:47.849537432Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "RAN context has been removed[addr: <nil>]",
+        "significance": "Indicates a protocol-level failure in RAN context management during registration, with missing RAN address, which is a critical component for successful registration."
+      },
+      {
+        "timestamp": "1773614567",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "RAN context has been removed[addr: <nil>]",
+        "significance": "Repeated occurrence suggests a persistent issue in RAN context handling, likely due to invalid or missing RAN address during registration phase."
+      },
+      {
+        "timestamp": "1773614567",
+        "source": "metrics",
+        "nf": "AMF",
+        "type": "metric",
+        "content": "24248320.0",
+        "significance": "AMF memory usage is within normal range, ruling out memory exhaustion as a root cause."
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

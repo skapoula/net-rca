@@ -1,0 +1,58 @@
+{
+  "incident_id": "0c44f01a-3b7b-4253-babf-7d552d706d3c",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "0c44f01a-3b7b-4253-babf-7d552d706d3c",
+    "layer": "infrastructure",
+    "root_nf": "AMF",
+    "failure_mode": "SBI and metrics server stopped",
+    "confidence": 0.95,
+    "evidence_chain": [
+      {
+        "timestamp": "1773603479",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "SBI server (listen on 0.0.0.0:8000) stopped",
+        "significance": "Indicates a critical service disruption in AMF's SBI interface, which is essential for registration signaling"
+      },
+      {
+        "timestamp": "1773603479",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "Metrics server (listen on 0.0.0.0:9091) stopped",
+        "significance": "Secondary service failure in AMF, suggesting a broader process or container issue"
+      },
+      {
+        "timestamp": "1773603479",
+        "source": "infrastructure",
+        "nf": "all_pods_healthy",
+        "type": "evidence",
+        "content": "Infrastructure Score: 1.0",
+        "significance": "Confirms infrastructure-level issue despite pod health status, indicating potential underlying container or process failure"
+      }
+    ],
+    "infra_score": 1,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "AMF",
+      "SEAF",
+      "(R)AN",
+      "SMF",
+      "Old AMF",
+      "UPF",
+      "New AMF",
+      "UE",
+      "UDM",
+      "UDM/ARPF"
+    ]
+  }
+}

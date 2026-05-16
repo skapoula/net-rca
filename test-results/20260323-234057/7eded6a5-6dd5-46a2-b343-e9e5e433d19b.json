@@ -1,0 +1,66 @@
+{
+  "incident_id": "7eded6a5-6dd5-46a2-b343-e9e5e433d19b",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "7eded6a5-6dd5-46a2-b343-e9e5e433d19b",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil during registration phase, indicating failure to establish or maintain UE context",
+    "confidence": 0.95,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-23T23:41:14.702559497Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Repeated occurrence across multiple UEs indicates a systemic failure in AMF to maintain UE context, directly violating the expected registration flow where UE context should be established."
+      },
+      {
+        "timestamp": "2026-03-23T23:41:15.633283749Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Consistent pattern of 'AmfUe is nil' logs confirms AMF is unable to reference or create UE context, which is a core requirement during registration."
+      },
+      {
+        "timestamp": "2026-03-23T23:41:14.701662105Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "The actual event occurs at AMF instead of UDM/ARPF, indicating a deviation from expected flow where AV generation should happen at UDM/ARPF, pointing to AMF incorrectly handling registration initiation."
+      },
+      {
+        "timestamp": "2026-03-23T23:41:15.606606537Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Further confirms that AMF is prematurely initiating registration timers without proper UE context, indicating a failure in the registration phase logic."
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "AUSF",
+      "UDM/ARPF",
+      "AMF",
+      "UE",
+      "New AMF",
+      "SMF",
+      "SEAF",
+      "(R)AN",
+      "UPF",
+      "Old AMF",
+      "UDM"
+    ]
+  }
+}

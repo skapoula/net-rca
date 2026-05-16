@@ -1,6 +1,11 @@
 """Shared state object for all agents in the triage pipeline."""
 
-from typing import Any, TypedDict
+from typing import Annotated, Any, TypedDict
+
+
+def _last_write(a: dict[str, str] | None, b: dict[str, str] | None) -> dict[str, str] | None:
+    """Reducer: keep the most recent non-None write (last-write-wins)."""
+    return b if b is not None else a
 
 
 class TriageState(TypedDict):
@@ -41,5 +46,5 @@ class TriageState(TypedDict):
     max_attempts: int  # Hard limit (default: 2)
     needs_more_evidence: bool
     evidence_gaps: list[str] | None  # Identified evidence gaps for second attempt
-    compressed_evidence: dict[str, str] | None  # pre-compressed evidence sections for the LLM prompt
+    compressed_evidence: Annotated[dict[str, str] | None, _last_write]  # pre-compressed evidence sections for the LLM prompt
     final_report: dict[str, Any] | None

@@ -1,0 +1,59 @@
+{
+  "incident_id": "b5f054e9-21f3-48d9-a2cc-765dcd1c0a89",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "b5f054e9-21f3-48d9-a2cc-765dcd1c0a89",
+    "layer": "application",
+    "root_nf": "AMF",
+    "failure_mode": "AmfUe is nil (missing UE context)",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-16T14:00:18.826336752Z",
+        "source": "logs",
+        "nf": "AMF",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Repeated occurrence across multiple UE contexts indicates a failure in maintaining UE state, which is critical for registration and authentication phases"
+      },
+      {
+        "timestamp": "2026-03-16T14:00:18.870489079Z",
+        "source": "traces",
+        "nf": "udr",
+        "type": "trace_deviation",
+        "content": "201 | 10.42.0.73 | POST | /nudr-dr/v2/subscription-data/imsi-208930000000001/context-data/sdm-subscriptions",
+        "significance": "Deviation from expected UDM/ARPF phase shows early subscription data access, but UE context not properly initialized"
+      },
+      {
+        "timestamp": "2026-03-16T13:59:44.033027829Z",
+        "source": "traces",
+        "nf": "smf",
+        "type": "trace_deviation",
+        "content": "No srcTcData and tgtTcData. Nothing to do",
+        "significance": "SMF prematurely concludes no action needed, indicating missing or invalid UE context from AMF"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 1,
+    "procedure_names": [
+      "Authentication_5G_AKA",
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "SEAF",
+      "UDM/ARPF",
+      "New AMF",
+      "(R)AN",
+      "SMF",
+      "UPF",
+      "AUSF",
+      "AMF",
+      "UE",
+      "UDM",
+      "Old AMF"
+    ]
+  }
+}

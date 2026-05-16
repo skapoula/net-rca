@@ -723,3 +723,158 @@ def test_infra_agent_prometheus_failure(sample_initial_state: TriageState) -> No
     assert result["infra_score"] == 0.0
     assert result["infra_findings"] is None
 
+
+# ===========================================================================
+# NEW: Tests for Prometheus wiring (Tasks 1-3)
+# ===========================================================================
+
+
+class TestFetchPrometheusMetrics:
+    """Tests for _fetch_prometheus_metrics() direct HTTP helper."""
+
+    @pytest.mark.asyncio
+    async def test_fetch_prometheus_metrics_returns_parsed_data(self) -> None:
+        """_fetch_prometheus_metrics returns dict keyed by report label."""
+        from unittest.mock import AsyncMock, MagicMock, patch
+
+        from triage_agent.agents.infra_agent import _fetch_prometheus_metrics
+
+        mock_resp = MagicMock()
+        mock_resp.raise_for_status = MagicMock()
+        mock_resp.json.return_value = {
+            "status": "success",
+            "data": {
+                "resultType": "vector",
+                "result": [
+                    {
+                        "metric": {"report": "pod_restarts", "pod": "amf-abc"},
+                        "value": [1700000000, "3"],
+                    }
+                ],
+            },
+        }
+
+        mock_client = AsyncMock()
+        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+        mock_client.__aexit__ = AsyncMock(return_value=None)
+        mock_client.get = AsyncMock(return_value=mock_resp)
+
+        with patch("triage_agent.agents.infra_agent.httpx.AsyncClient", return_value=mock_client):
+            result = await _fetch_prometheus_metrics(["amf"], 1700000000, 1700001000)
+
+        assert isinstance(result, dict)
+        assert result  # non-empty
+
+    @pytest.mark.asyncio
+    async def test_fetch_prometheus_metrics_returns_empty_on_failure(self) -> None:
+        """_fetch_prometheus_metrics returns {} when Prometheus is unreachable."""
+        from unittest.mock import AsyncMock, patch
+
+        from triage_agent.agents.infra_agent import _fetch_prometheus_metrics
+
+        mock_client = AsyncMock()
+        mock_client.__aenter__ = AsyncMock(return_value=mock_client)
+        mock_client.__aexit__ = AsyncMock(return_value=None)
+        mock_client.get = AsyncMock(side_effect=Exception("connection refused"))
+
+        with patch("triage_agent.agents.infra_agent.httpx.AsyncClient", return_value=mock_client):
+            result = await _fetch_prometheus_metrics(["amf"], 1700000000, 1700001000)
+
+        assert isinstance(result, dict)
+        assert result == {}
+
+
+class TestReplicaStatus:
+    """Tests for replica-absence PromQL query and extract_replica_status."""
+
+    def test_build_infra_queries_unchanged(self) -> None:
+        """build_infra_queries still takes core_namespace and returns 5+ queries."""
+        queries = build_infra_queries("5g-core")
+        assert len(queries) >= 5
+
+    def test_extract_replica_status_zero_replicas(self) -> None:
+        """extract_replica_status returns deployment name when replicas == 0."""
+        from triage_agent.agents.infra_agent import extract_replica_status
+
+        metrics = {
+            "replicas_available": [
+                {"metric": {"deployment": "amf", "report": "replicas_available"}, "value": [0, "0"]},
+            ]
+        }
+        absent = extract_replica_status(metrics)
+        assert "amf" in absent
+
+    def test_extract_replica_status_healthy(self) -> None:
+        """extract_replica_status excludes deployments with replicas > 0."""
+        from triage_agent.agents.infra_agent import extract_replica_status
+
+        metrics = {
+            "replicas_available": [
+                {"metric": {"deployment": "amf", "report": "replicas_available"}, "value": [0, "2"]},
+            ]
+        }
+        absent = extract_replica_status(metrics)
+        assert "amf" not in absent
+
+    def test_extract_replica_status_empty(self) -> None:
+        """extract_replica_status returns empty set when no replica data."""
+        from triage_agent.agents.infra_agent import extract_replica_status
+
+        absent = extract_replica_status({})
+        assert absent == set()
+
+    def test_compute_infrastructure_score_zero_replicas(self) -> None:
+        """score == 1.0 when a DAG NF has 0 available replicas (short-circuit)."""
+        metrics = {
+            "replicas_available": [
+                {"metric": {"deployment": "amf", "report": "replicas_available"}, "value": [0, "0"]},
+            ]
+        }
+        score = compute_infrastructure_score(metrics, ["AMF"])
+        assert score == pytest.approx(1.0), "absent deployment must score 1.0 (definitive infrastructure event)"
+
+    def test_compute_infrastructure_score_nonzero_replicas_unchanged(self) -> None:
+        """Existing 0-restart, running-pod behavior unchanged when replicas > 0."""
+        metrics = {
+            "pod_restarts": [{"pod": "amf-1", "value": 0}],
+            "oom_kills": [],
+            "cpu_usage": [{"pod": "amf-1", "value": 0.3}],
+            "memory_percent": [{"pod": "amf-1", "value": 50}],
+            "pod_status": [{"pod": "amf-1", "phase": "Running"}],
+            "replicas_available": [
+                {"metric": {"deployment": "amf"}, "value": [0, "2"]},
+            ],
+        }
+        score = compute_infrastructure_score(metrics, ["AMF"])
+        assert score == pytest.approx(0.0, abs=0.01)
+
+
+class TestInfraAgentZeroReplica:
+    """Tests for infra_agent() entry point with 0-replica scenario."""
+
+    def test_infra_agent_scores_zero_replica_nf(
+        self, monkeypatch: pytest.MonkeyPatch, sample_initial_state: TriageState
+    ) -> None:
+        """infra_score > 0 when a DAG NF has 0 available replicas."""
+        import sys
+
+        # Use sys.modules to get the actual module object, not the function shadowed
+        # by agents/__init__.py which imports `infra_agent` (the function) as an
+        # attribute of the package, masking the module in attribute-chain lookups.
+        infra_module = sys.modules["triage_agent.agents.infra_agent"]
+
+        async def fake_fetch(nfs: list[str], start: int, end: int) -> dict:
+            return {
+                "replicas_available": [
+                    {
+                        "metric": {"deployment": "amf", "report": "replicas_available"},
+                        "value": [0, "0"],
+                    },
+                ]
+            }
+
+        monkeypatch.setattr(infra_module, "_fetch_prometheus_metrics", fake_fetch)
+        result = infra_agent(sample_initial_state)
+        assert result["infra_score"] >= 0.80, "Expected infra_score >= 0.80 for 0-replica AMF (infrastructure layer)"
+        assert result["infra_checked"] is True
+

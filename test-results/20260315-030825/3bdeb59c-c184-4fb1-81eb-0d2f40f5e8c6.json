@@ -1,0 +1,74 @@
+{
+  "incident_id": "3bdeb59c-c184-4fb1-81eb-0d2f40f5e8c6",
+  "status": "complete",
+  "final_report": {
+    "incident_id": "3bdeb59c-c184-4fb1-81eb-0d2f40f5e8c6",
+    "layer": "application",
+    "root_nf": "SMF",
+    "failure_mode": "BSF selection failure leading to fallback to NRF",
+    "confidence": 0.98,
+    "evidence_chain": [
+      {
+        "timestamp": "2026-03-15T03:09:00.512854992Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF selection failed: no BSF instances found",
+        "significance": "First occurrence of BSF failure, indicates upstream dependency issue"
+      },
+      {
+        "timestamp": "2026-03-15T03:09:00.512871642Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF query error (falling back to NRF): no BSF instances found",
+        "significance": "Confirms failure propagation and fallback mechanism activation"
+      },
+      {
+        "timestamp": "2026-03-15T03:08:56.278621737Z",
+        "source": "logs",
+        "nf": "amf",
+        "type": "log",
+        "content": "AmfUe is nil",
+        "significance": "Indicates AMF is unable to maintain UE context, likely due to missing SMF/BSF coordination"
+      },
+      {
+        "timestamp": "2026-03-15T03:09:01.211021086Z",
+        "source": "logs",
+        "nf": "smf",
+        "type": "log",
+        "content": "BSF selection failed: no BSF instances found",
+        "significance": "Recurrent failure confirms persistent application-level issue"
+      },
+      {
+        "timestamp": "2026-03-15T03:08:55.625109041Z",
+        "source": "traces",
+        "nf": "amf",
+        "type": "trace_deviation",
+        "content": "Start T3560 timer",
+        "significance": "Deviation shows expected AV generation in UDM/ARPF, but actual event occurs in AMF, indicating misrouting or missing upstream dependency"
+      }
+    ],
+    "infra_score": 0,
+    "evidence_quality_score": 0.95,
+    "attempt_count": 2,
+    "procedure_names": [
+      "Registration_General"
+    ],
+    "mapping_confidence": 0.8,
+    "mapping_method": "keyword_match",
+    "nf_union": [
+      "(R)AN",
+      "SEAF",
+      "Old AMF",
+      "SMF",
+      "AMF",
+      "AUSF",
+      "UE",
+      "UDM",
+      "New AMF",
+      "UPF",
+      "UDM/ARPF"
+    ]
+  }
+}

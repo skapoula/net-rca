@@ -1,0 +1,71 @@
+{
+  "pod_restarts": {
+    "nrf-599b56f964-7spm5": 0.0,
+    "mongodb-6796b4d5dc-hqhsq": 0.0,
+    "upf-9f5hz": 0.0,
+    "udr-7456945f49-hnsnw": 0.0,
+    "udm-58cc5c7d7c-q64rq": 0.0,
+    "ausf-557b995b7-xt64m": 0.0,
+    "nssf-5bb644c4d7-92xfr": 0.0,
+    "pcf-f9775c644-c8vff": 0.0,
+    "smf-854f858746-m6jgq": 0.0,
+    "amf-8f76f76b9-zv6mb": 0.0
+  },
+  "oom_kills": {},
+  "resource_usage": {
+    "nrf-599b56f964-7spm5": {
+      "cpu": 0.0,
+      "memory_percent": 2.57415771484375
+    },
+    "mongodb-6796b4d5dc-hqhsq": {
+      "cpu": 0.0,
+      "memory_percent": 9.134101867675781
+    },
+    "upf-9f5hz": {
+      "cpu": 0.0,
+      "memory_percent": 0.7030487060546875
+    },
+    "pcf-f9775c644-c8vff": {
+      "cpu": 0.0,
+      "memory_percent": 2.306365966796875
+    },
+    "udr-7456945f49-hnsnw": {
+      "cpu": 0.0,
+      "memory_percent": 2.635955810546875
+    },
+    "ausf-557b995b7-xt64m": {
+      "cpu": 0.0,
+      "memory_percent": 3.6041259765625
+    },
+    "nssf-5bb644c4d7-92xfr": {
+      "cpu": 0.0,
+      "memory_percent": 2.67181396484375
+    },
+    "udm-58cc5c7d7c-q64rq": {
+      "cpu": 0.0,
+      "memory_percent": 2.492523193359375
+    },
+    "smf-854f858746-m6jgq": {
+      "cpu": 0.0,
+      "memory_percent": 3.19061279296875
+    },
+    "amf-8f76f76b9-zv6mb": {
+      "cpu": 0.0,
+      "memory_percent": 1.4644622802734375
+    }
+  },
+  "node_health": {
+    "nrf-599b56f964-7spm5": "Running",
+    "mongodb-6796b4d5dc-hqhsq": "Running",
+    "upf-9f5hz": "Running",
+    "udr-7456945f49-hnsnw": "Running",
+    "udm-58cc5c7d7c-q64rq": "Running",
+    "ausf-557b995b7-xt64m": "Running",
+    "nssf-5bb644c4d7-92xfr": "Running",
+    "pcf-f9775c644-c8vff": "Running",
+    "smf-854f858746-m6jgq": "Running",
+    "amf-8f76f76b9-zv6mb": "Running"
+  },
+  "concurrent_failures": 0,
+  "critical_events": []
+}
